@@ -15,11 +15,19 @@
   "author": "OL-sergio",
   "type": "module",
   "main": "index.js",
+
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:css": "tailwindcss -i ./index.css -o ./public/styles/output.css --minify",
+    "dev": "tailwindcss -i ./index.css -o ./public/styles/output.css --watch"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.6",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2"
   }
+
 }
