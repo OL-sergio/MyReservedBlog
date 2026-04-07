@@ -7,13 +7,17 @@ const PORT = process.env.PORT || 3000;
 const HOST = 'localhost';
 
 // Middleware
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 // Routes
 app.get('/', (req, res) => {
-      res.send('Welcome to MyReservedBlog');
+      res.render('index.ejs');
 });
 
 // Start server
