@@ -1,0 +1,8 @@
+#search-icon {
+  transition: color 0.2s ease;
+}
+
+#search-button:active #search-icon,
+#search-button:focus #search-icon {
+  color: #000 !important;
+}

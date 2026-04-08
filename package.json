@@ -17,7 +17,15 @@
   "main": "index.js",
   "dependencies": {
     "@types/body-parser": "^1.19.6",
+    "bootstrap-icons": "^1.13.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.0",
+    "globals": "^17.4.0",
+    "typescript-eslint": "^8.58.1"
+    
   }
 }
