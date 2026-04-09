@@ -5,7 +5,7 @@ import process from 'process';
 const app = express();
 
 const PORT = process.env.PORT || 10000;
-const HOST = 'localhost';
+const HOST = '0.0.0.0';
 
 // Middleware
 app.set('view engine', 'ejs');
