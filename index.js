@@ -4,7 +4,7 @@ import process from 'process';
 
 const app = express();
 
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT || 10000;
 const HOST = 'localhost';
 
 // Middleware
