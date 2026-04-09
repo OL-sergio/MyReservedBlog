@@ -5,7 +5,7 @@ import process from 'process';
 const app = express();
 
 const PORT = process.env.PORT || 10000;
-const HOST = '0.0.0.0';
+
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running at ${PORT}`);
 });
+  
