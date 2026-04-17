@@ -1,44 +1,157 @@
 <%- include('partials/header.ejs') %>
 
-<div class="container background-container">
-  <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-    <div class="col-10 col-sm-8 col-lg-6">
-      <img
-        src="/images/image_2_coding.jpg"
-        class="d-block mx-lg-auto img-fluid hero-image"
-
-        loading="lazy"
-      />
-    </div>
-    <div class="col-lg-6">
-      <h1 class="display-4 fw-bold text-body-emphasis lh-1 ms-4 mb-3">
-        How to be a better developer in 2026
-      </h1>
-      <div class="mb-3 text-start ms-5">
-        <p class="lead paragraph-truncate" id="paragraph-text">
-          In 2026, being a better developer involves continuous learning,
-          embracing new technologies, and honing problem-solving skills. Stay
-          updated with industry trends, collaborate with peers, and focus on
-          writing clean, efficient code. Additionally, prioritize soft skills
-          like communication and adaptability to thrive in the ever-evolving
-          tech landscape.
-        </p>
-        <button class="read-more-btn" id="read-more-btn">Ver</button>
+<section>
+  // Hero section
+  <div class="container background-container">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+      <div class="col-10 col-sm-8 col-lg-6">
+        <img
+          src="/images/image_2_coding.jpg"
+          class="d-block mx-lg-auto img-fluid hero-image"
+          loading="lazy"
+        />
+      </div>
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold align-items-center lh-1 ms-2 mb-4">
+          How to be a better developer in 2026
+        </h1>
+        <div class="mb-3 text-start ms-4">
+          <p class="lead paragraph-truncate" id="paragraph-text">
+            In 2026, being a better developer involves continuous learning,
+            embracing new technologies, and honing problem-solving skills. Stay
+            updated with industry trends, collaborate with peers, and focus on
+            writing clean, efficient code. Additionally, prioritize soft skills
+            like communication and adaptability to thrive in the ever-evolving
+            tech landscape.
+          </p>
+          <button class="read-more-btn" id="read-more-btn">Ver</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+// Hero section
+<div class="divider"></div>
+<section>
+  <div class="container-xxl">
+    <div
+      class="row g-0 border rounded-3 overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative mx-5"
+    >
+      <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-primary-emphasis">World</strong>
+        <h3 class="mb-0">Featured post</h3>
+        <div class="mb-1 text-body-secondary">Nov 12</div>
+        <p class="card-text mb-auto">
+          This is a wider card with supporting text below as a natural lead-in
+          to additional content.
+        </p>
+        <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+          Continue reading
+          <svg class="bi" aria-hidden="true">
+            <use xlink:href="#chevron-right"></use>
+          </svg>
+        </a>
+      </div>
+      <div class="col-auto d-none d-lg-block">
+        <img
+          src="/images/image_1_coding.jpg"
+          class="d-block mx-lg-auto img-fluid hero-image"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+<section>
+  // Cards section
+  <div class="container-xxl">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mx-5">
+      <div class="col p-0">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 90%">
+          <img
+            src="/images/image_3_coding.jpg"
+            class="d-block mx-lg-auto img-fluid hero-image"
+            loading="lazy"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              This is a wider card with supporting text below as a natural
+              lead-in to additional content. This content is a little bit
+              longer.
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  View
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  Edit
+                </button>
+              </div>
+              <small class="text-body-secondary">9 mins</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col p-0">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 90%">
+          <img
+            src="/images/image_4_coding.jpg"
+            class="d-block mx-lg-auto img-fluid hero-image"
+            loading="lazy"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              This is a wider card with supporting text below as a natural
+              lead-in to additional content. This content is a little bit
+              longer.
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  View
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  Edit
+                </button>
+              </div>
+              <small class="text-body-secondary">9 mins</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col p-0">
+        <div class="card rounded-0 shadow-sm">
+          <img
+            src="/images/image_5_coding.jpg"
+            class="d-block mx-lg-auto img-fluid hero-image"
+            loading="lazy"
+          />
+          <div class="card-body">
+            <p class="card-text">
+              This is a wider card with supporting text below as a natural
+              lead-in to additional content. This content is a little bit
+              longer.
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  View
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">
+                  Edit
+                </button>
+              </div>
+              <small class="text-body-secondary">9 mins</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
 
 <%- include('partials/footer.ejs') %>
-
-<script>
-  const paragraph = document.getElementById('paragraph-text');
-  const btn = document.getElementById('read-more-btn');
-
-  btn.addEventListener('click', function () {
-    paragraph.classList.toggle('expanded');
-    btn.textContent = paragraph.classList.contains('expanded')
-      ? 'Esconder'
-      : 'see more';
-  });
-</script>

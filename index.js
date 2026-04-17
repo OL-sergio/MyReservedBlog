@@ -9,10 +9,10 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 const HOST = process.env.HOST || '0.0.0.0';
 
-// For local development, you can uncomment the lines 
+// For local development, you can uncomment the lines
 // below and comment out the lines above
-//const PORT = process.env.PORT || 3000;
-//const HOST = process.env.HOST || 'localhost';
+// const PORT = process.env.PORT || 3000;
+// const HOST = process.env.HOST || 'localhost';
 
 // Middleware
 app.set('view engine', 'ejs');

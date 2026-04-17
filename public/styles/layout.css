@@ -87,3 +87,7 @@ body {
     max-width: 500px;
   }
 }
+
+.divider {
+  margin: 1.5% 0 0 0;
+}
