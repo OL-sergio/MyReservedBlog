@@ -3,7 +3,7 @@ class ReadMoreToggle {
     paragraphId,
     buttonId,
     expandedText = 'Hide',
-    collapsedText = 'See more'
+    collapsedText = 'Read more'
   ) {
     this.paragraph = document.getElementById(paragraphId);
     this.btn = document.getElementById(buttonId);
@@ -29,5 +29,5 @@ class ReadMoreToggle {
 
 // Inicializar ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
-  new ReadMoreToggle('paragraph-text', 'read-more-btn', 'Hide', 'See more');
+  new ReadMoreToggle('paragraph-text', 'read-more-btn', 'Hide', 'Read more');
 });

@@ -24,15 +24,37 @@ body {
 .hero-image {
   max-width: 100%;
   height: auto;
-  aspect-ratio: 500 / 300;
+  aspect-ratio: 500 / 200;
   object-fit: cover;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.btn-primary {
+  background-color: #4a0391;
+  color: white;
 }
 
 /* Desktop */
 @media (min-width: 768px) {
   .hero-image {
-    width: 500px;
+    width: 550px;
     height: 300px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .hero-image {
+    width: 100%;
+    max-width: 500px;
   }
 }
 
@@ -78,14 +100,6 @@ body {
 
 .read-more-btn:hover {
   color: #0b5ed7;
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .hero-image {
-    width: 100%;
-    max-width: 500px;
-  }
 }
 
 .divider {

@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') %>
 
 <section>
-  // Hero section
+  <!-- Hero section -->
   <div class="container background-container">
     <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
       <div class="col-10 col-sm-8 col-lg-6">
@@ -12,10 +12,12 @@
         />
       </div>
       <div class="col-lg-6">
-        <h1 class="display-4 fw-bold align-items-center lh-1 ms-2 mb-4">
+        <h1
+          class="display-4 fw-bold align-items-center text-start lh-1 mx-5 px-4 mb-4"
+        >
           How to be a better developer in 2026
         </h1>
-        <div class="mb-3 text-start ms-4">
+        <div class="mb-3 text-start mx-5 px-4">
           <p class="lead paragraph-truncate" id="paragraph-text">
             In 2026, being a better developer involves continuous learning,
             embracing new technologies, and honing problem-solving skills. Stay
@@ -24,13 +26,18 @@
             like communication and adaptability to thrive in the ever-evolving
             tech landscape.
           </p>
-          <button class="read-more-btn" id="read-more-btn">Ver</button>
+          <button
+            class="read-more-btn text-decoration-none text-black fw-bold"
+            id="read-more-btn"
+          >
+            Read more
+          </button>
         </div>
       </div>
     </div>
   </div>
 </section>
-// Hero section
+<!-- Hero section -->
 <div class="divider"></div>
 <section>
   <div class="container-xxl">
@@ -38,24 +45,32 @@
       class="row g-0 border rounded-3 overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative mx-5"
     >
       <div class="col p-4 d-flex flex-column position-static">
-        <strong class="d-inline-block mb-2 text-primary-emphasis">World</strong>
-        <h3 class="mb-0">Featured post</h3>
-        <div class="mb-1 text-body-secondary">Nov 12</div>
-        <p class="card-text mb-auto">
+        <h3 class="mb-0 fw-bold mb-4">Featured post</h3>
+        <p class="text-body-secondary mb-auto">
           This is a wider card with supporting text below as a natural lead-in
           to additional content.
         </p>
-        <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
-          Continue reading
-          <svg class="bi" aria-hidden="true">
-            <use xlink:href="#chevron-right"></use>
-          </svg>
-        </a>
+        <div class="row my-4">
+          <div class="col-md-8 text-body-secondary">Nov 12</div>
+          <div class="col-sm text-end me-3">
+            <a
+              href="#"
+              class="icon-link icon-link-hover text-decoration-none text-black fw-bolder stretched-link"
+            >
+              Read more
+              <svg class="bi" aria-hidden="true">
+                <use xlink:href="#chevron-right"></use>
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="col-auto d-none d-lg-block">
+      <div class="col-auto d-lg-block">
         <img
           src="/images/image_1_coding.jpg"
-          class="d-block mx-lg-auto img-fluid hero-image"
+          class="d-inline hero-image img-fluidfluid"
+          width="100%"
+          height="100%"
           loading="lazy"
         />
       </div>
@@ -64,85 +79,102 @@
 </section>
 <div class="divider"></div>
 <section>
-  // Cards section
+  <!-- Cards section -->
   <div class="container-xxl">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mx-5">
-      <div class="col p-0">
-        <div class="card border-0 rounded-0 shadow-sm" style="width: 90%">
+    <div class="d-flex row-cols-0 row-cols-sm-2 row-cols-md-3 g-3 mx-5">
+      <div class="flex-fill">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
           <img
             src="/images/image_3_coding.jpg"
             class="d-block mx-lg-auto img-fluid hero-image"
             loading="lazy"
           />
           <div class="card-body">
-            <p class="card-text">
+            <h4 class="card-title fw-bold text-start my-3">Card title</h4>
+            <p class="card-text text-body-secondary">
               This is a wider card with supporting text below as a natural
               lead-in to additional content. This content is a little bit
               longer.
             </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  View
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  Edit
-                </button>
+            <div
+              class="d-flex flex-row-reverse justify-content-between align-items-center"
+            >
+              <div class="text-group">
+                <a
+                  href="#"
+                  class="icon-link icon-link-hover text-decoration-none text-black fw-bolder stretched-link"
+                >
+                  Read more
+                  <svg class="bi" aria-hidden="true">
+                    <use xlink:href="#chevron-right"></use>
+                  </svg>
+                </a>
               </div>
               <small class="text-body-secondary">9 mins</small>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="col p-0">
-        <div class="card border-0 rounded-0 shadow-sm" style="width: 90%">
+      <div class="flex-fill mx-4">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
           <img
             src="/images/image_4_coding.jpg"
             class="d-block mx-lg-auto img-fluid hero-image"
             loading="lazy"
           />
           <div class="card-body">
-            <p class="card-text">
+            <h4 class="card-title fw-bold text-start my-3">Card title</h4>
+            <p class="card-text text-body-secondary">
               This is a wider card with supporting text below as a natural
               lead-in to additional content. This content is a little bit
               longer.
             </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  View
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  Edit
-                </button>
+            <div
+              class="d-flex flex-row-reverse justify-content-between align-items-center"
+            >
+              <div class="text-group">
+                <a
+                  href="#"
+                  class="icon-link icon-link-hover text-decoration-none text-black fw-bolder stretched-link"
+                >
+                  Read more
+                  <svg class="bi" aria-hidden="true">
+                    <use xlink:href="#chevron-right"></use>
+                  </svg>
+                </a>
               </div>
               <small class="text-body-secondary">9 mins</small>
             </div>
           </div>
         </div>
       </div>
-      <div class="col p-0">
-        <div class="card rounded-0 shadow-sm">
+      <div class="flex-fill p-0">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
           <img
             src="/images/image_5_coding.jpg"
-            class="d-block mx-lg-auto img-fluid hero-image"
+            class="d-block mx-lg-auto img-fluidfluid hero-image"
             loading="lazy"
           />
           <div class="card-body">
-            <p class="card-text">
+            <h4 class="card-title fw-bold text-start my-3">Card title</h4>
+            <p class="card-text text-body-secondary">
               This is a wider card with supporting text below as a natural
               lead-in to additional content. This content is a little bit
               longer.
             </p>
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  View
-                </button>
-                <button type="button" class="btn btn-sm btn-outline-secondary">
-                  Edit
-                </button>
+            <div
+              class="d-flex flex-row-reverse justify-content-between align-items-center"
+            >
+              <div class="text-group">
+                <a
+                  href="#"
+                  class="icon-link icon-link-hover text-decoration-none text-black fw-bolder stretched-link"
+                >
+                  Read more
+                  <svg class="bi" aria-hidden="true">
+                    <use xlink:href="#chevron-right"></use>
+                  </svg>
+                </a>
               </div>
               <small class="text-body-secondary">9 mins</small>
             </div>
@@ -153,5 +185,66 @@
   </div>
 </section>
 <div class="divider"></div>
-
+<section>
+  <div class="container-xxl">
+    <div
+      class="row p-0 pb-0 pe-lg-0 pt-lg-0 align-items-center rounded-3 mx-5"
+      style="background-color: rgba(234, 247, 254, 0.66)"
+    >
+      <div class="col-lg-6 p-lg-6 pt-lg-3">
+        <h1 class="display-5 fw-bold lh-1 text-start text-body-emphasis ms-5">
+          Border hero with cropped
+        </h1>
+        <p class="lead mt-5 mx-5">
+          Quickly design and customize responsive mobile-first sites with
+          Bootstrap, the world’s most popular front-end open source toolkit,
+          featuring Sass variables and mixins, responsive grid system, extensive
+          prebuilt components, and powerful JavaScript plugins.
+        </p>
+        <div
+          class="d-flex flex-row-reverse justify-content-end align-items-center mt-5 ms-5 pe-0"
+        >
+          <div class="text-group">
+            <a href="#" class="icon-link icon-link-hover stretched-link">
+              <h5 class="text-decoration-none text-black fw-bolder">
+                Read more
+              </h5>
+              <svg class="bi" aria-hidden="true">
+                <use xlink:href="#chevron-right"></use>
+              </svg>
+            </a>
+          </div>
+          <div class="d-flex flex-grow-1">
+            <h5 class="text-body-secondary">2026 march 12</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 offset-lg-1 rounded overflow-hidden">
+        <img
+          class="d-inline-block mx-lg-auto img-fluidfluid"
+          src="/images/image_2_coding.jpg "
+          alt=""
+          width="1000"
+          height="540"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+<div class="container-xxl">
+  <div
+    class="d-flex d-inline-block align-items-center justify-content-end mt-4mb-5 mx-5"
+  >
+    <button
+      class="btn btn-primary align-items-center justify-content-end"
+      style="width: 150px; height: 50px; font-weight: bold"
+      href="#"
+    >
+      See more <i class="bi bi-arrow-down-circle-fill ms-2"></i>
+    </button>
+  </div>
+</div>
+<div class="divider"></div>
 <%- include('partials/footer.ejs') %>
