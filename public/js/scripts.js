@@ -35,7 +35,7 @@ class ReadMoreToggle {
 }
 
 // Inicializar ao carregar a página
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => { 
   const togglePairs = [
     ['card-hero-text', 'card-hero-btn'],
     ['featured-post-text', 'featured-post-btn'],
