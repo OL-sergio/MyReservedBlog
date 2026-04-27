@@ -6,25 +6,34 @@ const app = express();
 
 // render.com provides the PORT and HOST environment variables,
 //  so we need to use those instead of hardcoding them
-const PORT = process.env.PORT || 10000;
-const HOST = process.env.HOST || '0.0.0.0';
+//const PORT = process.env.PORT || 10000;
+//const HOST = process.env.HOST || '0.0.0.0';
 
 // For local development, you can uncomment the lines
 // below and comment out the lines above
-//const PORT = process.env.PORT || 3000;
-//const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || 'localhost';
 
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.use(express.static('public'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login.ejs');
+});
+
+app.get('/register', (req, res) => {
+  res.render('register.ejs');
 });
 
 // Start server

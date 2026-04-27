@@ -61,21 +61,20 @@ body {
 /* Truncate paragraph to 2 lines with ellipsis */
 .paragraph-truncate {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 0.3s ease;
 }
 
-/* Expanded state */
+/* Força o expanded a funcionar */
 .paragraph-truncate.expanded {
-  display: block;
-  -webkit-line-clamp: unset;
-  line-clamp: unset;
-  overflow: visible;
-  text-overflow: clip;
+  display: block !important;
+  -webkit-line-clamp: unset !important;
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
 }
 
 /* Truncate to 1 line */
@@ -96,10 +95,6 @@ body {
   cursor: pointer;
   text-decoration: underline;
   transition: color 0.2s ease;
-}
-
-.read-more-btn:hover {
-  color: #0b5ed7;
 }
 
 .divider {
