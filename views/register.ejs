@@ -1,5 +1,6 @@
-<%- include('partials/header.ejs') %>
+<%- include('partials/header-no-navigation.ejs') %>
 
+<div class="divider-froms" style="height: 10dvh"></div>
 <div class="container d-flex align-items-center justify-content-center h-100">
   <div class="modal-dialog">
     <div
@@ -7,13 +8,9 @@
       style="background-color: #fbfbfb"
     >
       <div class="d-block align-self-end m-5 pe-4 border-bottom-0">
-        <button
-          type="button"
-          class="btn-close ms-5"
-          background-color="transparent"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <a class="btn-close ms-5" href="/" aria-label="Close">
+          <i class="bi bi-x"></i>
+        </a>
       </div>
       <div class="modal-header p-1 pb-3 border-bottom-0">
         <h1 class="fw-bold mb-5 fs-3">Sign up with your email</h1>
@@ -48,10 +45,10 @@
           </div>
           <div class="form-floating mb-3">
             <input
-              type="password"
+              type="confirmPassword"
               class="form-control rounded-3"
-              id="floatingPassword"
-              placeholder="Password"
+              id="floatingConfirmPassword"
+              placeholder="Confirm Password"
             />
             <label for="floatingPassword">Confirm Password</label>
             <kpm-field-badge
@@ -67,10 +64,10 @@
             class="w-100 mb-2 btn btn-lg rounded-3 btn-primary"
             type="submit"
           >
-            Sign in
+            Sign up
           </button>
           <div
-            class="d-flex justify-content-between align-items-center mb-3 mt-4"
+            class="d-flex justify-content-center align-items-center mb-3 mt-4"
           >
             <div class="form-check">
               <input
@@ -79,14 +76,16 @@
                 value=""
                 id="rememberMeCheck"
               />
-              <label class="form-check-label" for="rememberMeCheck"
-                >By clicking Sign in, you agree to the terms of use.</label
-              >
+
+              <label class="form-check-label" for="rememberMeCheck">
+                I agree to the
+                <a href="#" class="text-decoration-none ms-1">terms of use</a>
+              </label>
             </div>
           </div>
-          <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex mb-3">
             <hr class="mt-3 flex-fill" style="text-decoration: dashed" />
-            <h5 class="mx-4">or</h5>
+            <h5 class="mx-4 mt-1">or</h5>
             <hr class="mt-3 flex-fill" style="text-decoration: dashed" />
           </div>
           <button
@@ -119,10 +118,16 @@
             </svg>
             Apple
           </button>
+          <div class="d-block align-self-end m-3 pe-3 border-top-0">
+            <p class="text-center">
+              Already have an account?
+              <a href="/login" class="text-decoration-none">Sign in</a>
+            </p>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<%- include('partials/footer.ejs') %>
+<%- include('partials/footer-no-navigation.ejs') %>

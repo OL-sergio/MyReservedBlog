@@ -1,4 +1,6 @@
-<%- include('partials/header.ejs') %>
+<%- include('partials/header-no-navigation.ejs') %>
+
+<div class="divider-froms" style="height: 10dvh"></div>
 
 <div class="container d-flex align-items-center justify-content-center h-100">
   <div class="modal-dialog">
@@ -7,13 +9,9 @@
       style="background-color: #fbfbfb"
     >
       <div class="d-block align-self-end m-5 pe-4 border-bottom-0">
-        <button
-          type="button"
-          class="btn-close ms-5"
-          background-color="transparent"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <a class="btn-close ms-5" href="/" aria-label="Close">
+          <i class="bi bi-x"></i>
+        </a>
       </div>
       <div class="modal-header p-1 pb-3 border-bottom-0">
         <h1 class="fw-bold mb-5 fs-3">Sign in with your email</h1>
@@ -103,10 +101,16 @@
             </svg>
             Apple
           </button>
+          <div class="d-block align-self-end m-3 pe-3 border-top-0">
+            <p class="text-center">
+              Don't have an account?
+              <a href="/register" class="text-decoration-none">Sign up</a>
+            </p>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<%- include('partials/footer.ejs') %>
+<%- include('partials/footer-no-navigation.ejs') %>
