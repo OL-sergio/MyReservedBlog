@@ -11,15 +11,12 @@ body {
   font-family: 'Figtree', 'Lato', 'Outfit', Arial, Helvetica, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+  background-color: var(--background-color);
 }
 
 h1 {
   color: var(--text-color);
   text-align: center;
-}
-
-body {
-  background-color: var(--background-color);
 }
 
 .background-container {
@@ -69,6 +66,7 @@ body {
 .paragraph-truncate {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,6 +77,7 @@ body {
 .paragraph-truncate.expanded {
   display: block !important;
   -webkit-line-clamp: unset !important;
+  line-clamp: unset !important;
   overflow: visible !important;
   max-height: none !important;
   height: auto !important;

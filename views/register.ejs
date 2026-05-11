@@ -13,13 +13,14 @@
         </a>
       </div>
       <div class="modal-header p-1 pb-3 border-bottom-0">
-        <h1 class="fw-bold mb-5 fs-3">Sign up with your email</h1>
+        <h1 class="fw-bold mb-5 fs-3">You can create your account</h1>
       </div>
       <div class="modal-body p-5 pt-0">
-        <form class="form-control p-4">
+        <form class="form-control p-4" action="/register" method="POST">
           <div class="form-floating mb-3">
             <input
-              type="name"
+              name="username"
+              type="text"
               class="form-control rounded-3"
               id="floatingInput"
               placeholder="name@example.com"
@@ -28,15 +29,17 @@
           </div>
           <div class="form-floating mb-3">
             <input
+              name="email"
               type="email"
               class="form-control rounded-3"
               id="floatingInput"
-              placeholder="name@example.com"
+              placeholder="Please enter your email"
             />
             <label for="floatingInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
             <input
+              name="password"
               type="password"
               class="form-control rounded-3"
               id="floatingPassword"
@@ -54,7 +57,8 @@
           </div>
           <div class="form-floating mb-3">
             <input
-              type="confirmPassword"
+              name="confirmPassword"
+              type="password"
               class="form-control rounded-3"
               id="floatingConfirmPassword"
               placeholder="Confirm Password"
