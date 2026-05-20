@@ -1,4 +1,4 @@
-<%- include('partials/header-no-navigation.ejs') %>
+<%- include('partials/nav-no-navigation.ejs') %>
 
 <div class="divider-froms" style="height: 10dvh"></div>
 <div class="container d-flex align-items-center justify-content-center h-100">
@@ -16,7 +16,7 @@
         <h1 class="fw-bold mb-5 fs-3">You can create your account</h1>
       </div>
       <div class="modal-body p-5 pt-0">
-        <form class="form-control p-4" action="/register" method="POST">
+        <form class="form-control register-user p-4" action="/register" method="POST">
           <div class="form-floating mb-3">
             <input
               name="username"
@@ -59,7 +59,7 @@
             <input
               name="confirmPassword"
               type="password"
-              class="form-control rounded-3"
+              class="form-control  rounded-3"
               id="floatingConfirmPassword"
               placeholder="Confirm Password"
             />
@@ -143,3 +143,16 @@
 </div>
 
 <%- include('partials/footer-no-navigation.ejs') %>
+
+<!-- Script para marcar sucesso na criação de utilizador -->
+<script>
+  // Quando o formulário de registo for submetido com sucesso
+  const form = document.querySelector('.register-user');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      // Marcar no sessionStorage que um utilizador foi criado com sucesso
+      // Isso será verificado na página index.ejs
+      sessionStorage.setItem('userCreatedSuccess', 'true');
+    });
+  }
+</script>

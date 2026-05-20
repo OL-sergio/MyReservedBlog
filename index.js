@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import process from 'process';
+import session from 'express-session';
 import { UserManager } from './models/UserManager.js';
 
 const app = express();
@@ -25,6 +26,16 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Session middleware
+app.use(
+  session({
+    secret: 'your-secret-key-change-this',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 3600000 }, // 1 hour
+  })
+);
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index.ejs');
@@ -46,14 +57,35 @@ app.get('/users', (req, res) => {
   res.json(userManager.getAllUsers());
 });
 
-// GET - Obter utilizador por ID
-app.get('/users/:id', (req, res) => {
-  const user = userManager.getUserById(parseInt(req.params.id));
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ message: 'Utilizador não encontrado' });
+// POST - Login de utilizador
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // Validar dados
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ message: 'Email e password são obrigatórios' });
   }
+
+  // Procurar utilizador por email
+  const user = userManager.getUserByEmail(email);
+  if (!user) {
+    return res.status(401).json({ message: 'Email ou password incorretos' });
+  }
+
+  // Verificar password (para agora, comparação simples - depois usar bcrypt)
+  if (user.password !== password) {
+    return res.status(401).json({ message: 'Email ou password incorretos' });
+  }
+
+  // Criar sessão
+  req.session.userId = user.id;
+  req.session.username = user.username;
+  req.session.email = user.email;
+
+  console.log('✅ Utilizador autenticado:', user.username);
+  res.status(200).redirect('/');
 });
 
 // POST - Criar novo utilizador
@@ -87,6 +119,16 @@ app.put('/users/:id', (req, res) => {
   const updatedUser = userManager.updateUser(parseInt(req.params.id), req.body);
   if (updatedUser) {
     res.json(updatedUser);
+  } else {
+    res.status(404).json({ message: 'Utilizador não encontrado' });
+  }
+});
+
+// GET - Obter utilizador por ID
+app.get('/users/:id', (req, res) => {
+  const user = userManager.getUserById(parseInt(req.params.id));
+  if (user) {
+    res.status(200).json(user);
   } else {
     res.status(404).json({ message: 'Utilizador não encontrado' });
   }

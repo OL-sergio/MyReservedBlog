@@ -1,4 +1,38 @@
-<%- include('partials/header.ejs') %>
+<%- include('partials/navigation.ejs') %>
+
+<!-- Success Message Container -->
+<div
+  id="success-message-created-user"
+  class="container mt-3"
+  style="display: none"
+>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Sucesso!</strong> A base de dados foi atualizada com sucesso.
+    Utilizador criado.
+    <button
+      type="button"
+      class="btn-close close-message-register-user"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
+
+<div
+  id="success-message-login-user"
+  class="container mt-3"
+  style="display: none"
+>
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <strong>Sucesso!</strong> Utilizador autenticado. Bem-vindo de volta!
+    <button
+      type="button"
+      class="btn-close close-message-login-user"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</div>
 
 <!-- Hero section -->
 <div class="container background-container">
@@ -248,6 +282,7 @@
   >
     <button
       class="btn btn-primary align-items-center justify-content-end"
+      id="change-bg-color-btn"
       style="width: 150px; height: 50px; font-weight: bold"
       href="#"
     >
@@ -258,3 +293,65 @@
 <div class="divider"></div>
 
 <%- include('partials/footer.ejs') %>
+
+<!-- Script para mostrar mensagem de sucesso quando utilizador é criado -->
+<script>
+  // Verificar se há uma mensagem de sucesso no sessionStorage
+  document.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('userCreatedSuccess')) {
+      // Mostrar o alerta de sucesso
+      const successContainer = document.getElementById(
+        'success-message-created-user'
+      );
+      if (!successContainer) return;
+
+      successContainer.style.display = 'block';
+
+      // Remover a mensagem automaticamente após 5 segundos
+      setTimeout(() => {
+        sessionStorage.removeItem('userCreatedSuccess');
+        successContainer.style.display = 'none';
+      }, 5000);
+
+      // Adicionar evento de clique ao botão de fechar
+      const closeButton = successContainer.querySelector(
+        '.close-message-register-user'
+      );
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          sessionStorage.removeItem('userCreatedSuccess');
+          successContainer.style.display = 'none';
+        });
+      }
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('userLoginSuccess')) {
+      // Mostrar o alerta de sucesso
+      const successContainer = document.getElementById(
+        'success-message-login-user'
+      );
+      if (!successContainer) return;
+
+      successContainer.style.display = 'block';
+
+      // Remover a mensagem automaticamente após 5 segundos
+      setTimeout(() => {
+        sessionStorage.removeItem('userLoginSuccess');
+        successContainer.style.display = 'none';
+      }, 5000);
+
+      // Adicionar evento de clique ao botão de fechar
+      const closeButton = successContainer.querySelector(
+        '.close-message-login-user'
+      );
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          sessionStorage.removeItem('userLoginSuccess');
+          successContainer.style.display = 'none';
+        });
+      }
+    }
+  });
+</script>

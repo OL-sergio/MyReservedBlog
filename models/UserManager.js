@@ -24,7 +24,7 @@ export class UserManager {
         return [];
       } else {
         // Outro erro
-        console.error('Erro ao ler ficheiro de utilizadores:', error.message);
+        console.error('Erro ao ler ficheiro de utilizadores:', error.message);    
         return [];
       }
     }

@@ -1,4 +1,4 @@
-<%- include('partials/header-no-navigation.ejs') %>
+<%- include('partials/nav-no-navigation.ejs') %>
 
 <div class="divider-froms" style="height: 10dvh"></div>
 
@@ -17,22 +17,26 @@
         <h1 class="fw-bold mb-5 fs-3">Sign in to your account</h1>
       </div>
       <div class="modal-body p-5 pt-0">
-        <form class="form-control p-4">
+        <form class="form-control p-4 login-user" action="/login" method="POST">
           <div class="form-floating mb-3">
             <input
+              name="email"
               type="email"
               class="form-control rounded-3"
               id="floatingInput"
               placeholder="name@example.com"
+              required
             />
             <label for="floatingInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
             <input
+              name="password"
               type="password"
               class="form-control rounded-3"
               id="floatingPassword"
               placeholder="Password"
+              required
             />
             <label for="floatingPassword">Password</label>
             <kpm-field-badge
@@ -114,3 +118,16 @@
 </div>
 
 <%- include('partials/footer-no-navigation.ejs') %>
+
+<!-- Script para marcar sucesso na login de utilizador -->
+<script>
+  // Quando o formulário de registo for submetido com sucesso
+  const form = document.querySelector('.login-user');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      // Marcar no sessionStorage que um utilizador foi criado com sucesso
+      // Isso será verificado na página index.ejs
+      sessionStorage.setItem('userLoginSuccess', 'true');
+    });
+  }
+</script>
