@@ -1,5 +1,9 @@
 <%- include('partials/nav-no-navigation.ejs') %>
 
+<!--TODO: Melhorar a interface de
+erro, para não ser apenas um texto, mas sim um card bonito a informar o
+utilizador do erro e como resolver, e também adicionar uma animação hover para
+dar um toque mais interativo.-->
 <div class="divider-froms" style="height: 10dvh"></div>
 <div class="container d-flex align-items-center justify-content-center h-100">
   <div class="modal-dialog">
@@ -16,26 +20,44 @@
         <h1 class="fw-bold mb-5 fs-3">You can create your account</h1>
       </div>
       <div class="modal-body p-5 pt-0">
-        <form class="form-control register-user p-4" action="/register" method="POST">
+        <form
+          class="form-control register-user p-4"
+          action="/register"
+          method="POST"
+        >
           <div class="form-floating mb-3">
             <input
               name="username"
               type="text"
-              class="form-control rounded-3"
-              id="floatingInput"
+              class="form-control rounded-3 users-username-input"
+              id="usernameInput"
               placeholder="name@example.com"
             />
-            <label for="floatingInput">User name</label>
+            <label for="usernameInput">User</label>
+            <small
+              id="usernameError"
+              class="text-danger d-none mt-2"
+              style="display: block; font-size: 0.875rem"
+            >
+              ❌ Username já registado
+            </small>
           </div>
           <div class="form-floating mb-3">
             <input
               name="email"
               type="email"
-              class="form-control rounded-3"
-              id="floatingInput"
+              class="form-control rounded-3 users-email-input"
+              id="emailInput"
               placeholder="Please enter your email"
             />
-            <label for="floatingInput">Email address</label>
+            <label for="emailInput">Email </label>
+            <small
+              id="emailError"
+              class="text-danger d-none mt-2"
+              style="display: block; font-size: 0.875rem"
+            >
+              ❌ Email já registado
+            </small>
           </div>
           <div class="form-floating mb-3">
             <input
@@ -59,17 +81,17 @@
             <input
               name="confirmPassword"
               type="password"
-              class="form-control  rounded-3"
+              class="form-control rounded-3 confirm-password-input"
               id="floatingConfirmPassword"
               placeholder="Confirm Password"
             />
-            <label for="floatingPassword">Confirm Password</label>
+            <label for="floatingConfirmPassword">Confirm Password</label>
             <kpm-field-badge
               style="--FieldBadge-ZLevel: 1057 !important"
               type="default"
               loading="false"
               menu-type="password"
-              class="kpm_input-field-button kpm_gray-key-icon"
+              class="kpm_input-field-button kpm_gray-key-icon card-confirm-password"
               data-product-type="b2c"
             ></kpm-field-badge>
           </div>
@@ -144,15 +166,155 @@
 
 <%- include('partials/footer-no-navigation.ejs') %>
 
-<!-- Script para marcar sucesso na criação de utilizador -->
+<!-- Script para validação de username em tempo real -->
+
 <script>
-  // Quando o formulário de registo for submetido com sucesso
+  //TODO: Modificar os alertas para serem mais bonitos e informativos, em vez de simples pop-ups, criar um card de alerta que apareça abaixo do formulário com a mensagem de erro e dicas para resolver, e adicionar uma animação hover para dar um toque mais interativo.
+  //TODO: Passar a codigo para um ficheiro JS externo para manter o código mais organizado e limpo, e facilitar a manutenção futura.
+  const usernameInput = document.getElementById('usernameInput');
+  const usernameError = document.getElementById('usernameError');
+  const emailInput = document.getElementById('emailInput');
+  const emailError = document.getElementById('emailError');
   const form = document.querySelector('.register-user');
+
+  let usernameCheckTimeout;
+  let emailCheckTimeout;
+  let usersCache = null;
+
+  // Cache de utilizadores para reduzir requisições
+  async function getUsers() {
+    if (!usersCache) {
+      try {
+        const response = await fetch('/users');
+        usersCache = await response.json();
+      } catch (error) {
+        console.error('Erro ao carregar utilizadores:', error);
+        return [];
+      }
+    }
+    return usersCache;
+  }
+
+  // Função genérica para validar disponibilidade
+  async function checkAvailability(input, error, field, compareKey) {
+    const value = input.value.trim();
+
+    if (!value) {
+      clearFieldStyling(input, error);
+      return;
+    }
+
+    const users = await getUsers();
+    const exists = users.some(
+      (user) => user[compareKey].toLowerCase() === value.toLowerCase()
+    );
+
+    if (exists) {
+      input.style.borderColor = '#dc3545';
+      input.style.borderWidth = '2px';
+      error.classList.remove('d-none');
+    } else {
+      input.style.borderColor = '#198754';
+      input.style.borderWidth = '2px';
+      error.classList.add('d-none');
+    }
+  }
+
+  // Limpar styling do campo
+  function clearFieldStyling(input, error) {
+    input.style.borderColor = '';
+    input.style.borderWidth = '';
+    error.classList.add('d-none');
+  }
+
+  // Configurar event listeners com debounce
+  const setupInputListener = (input, error, checkFunction, timeoutVar) => {
+    input.addEventListener('blur', checkFunction);
+    input.addEventListener('input', () => {
+      clearTimeout(timeoutVar);
+      timeoutVar = setTimeout(checkFunction, 500);
+    });
+  };
+
+  // Verificar username em tempo real
+  usernameInput.addEventListener('blur', () =>
+    checkAvailability(usernameInput, usernameError, 'username', 'username')
+  );
+  usernameInput.addEventListener('input', () => {
+    clearTimeout(usernameCheckTimeout);
+    usernameCheckTimeout = setTimeout(() => {
+      if (usernameInput.value.trim().length > 0) {
+        checkAvailability(usernameInput, usernameError, 'username', 'username');
+      } else {
+        clearFieldStyling(usernameInput, usernameError);
+      }
+    }, 500);
+  });
+
+  // Verificar email em tempo real
+  emailInput.addEventListener('blur', () =>
+    checkAvailability(emailInput, emailError, 'email', 'email')
+  );
+  emailInput.addEventListener('input', () => {
+    clearTimeout(emailCheckTimeout);
+    emailCheckTimeout = setTimeout(() => {
+      if (emailInput.value.trim().length > 0) {
+        checkAvailability(emailInput, emailError, 'email', 'email');
+      } else {
+        clearFieldStyling(emailInput, emailError);
+      }
+    }, 500);
+  });
+
+  // Quando o formulário for submetido
   if (form) {
-    form.addEventListener('submit', (e) => {
-      // Marcar no sessionStorage que um utilizador foi criado com sucesso
-      // Isso será verificado na página index.ejs
-      sessionStorage.setItem('userCreatedSuccess', 'true');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Verificar se tem erros antes de enviar
+      if (usernameInput.style.borderColor === 'rgb(220, 53, 69)') {
+        alert('❌ Por favor, escolha outro username');
+        return;
+      }
+
+      if (emailInput.style.borderColor === 'rgb(220, 53, 69)') {
+        alert('❌ Por favor, escolha outro email');
+        return;
+      }
+
+      // Recolher dados do formulário
+      const formData = {
+        username: document.querySelector('input[name="username"]').value,
+        email: document.querySelector('input[name="email"]').value,
+        password: document.querySelector('input[name="password"]').value,
+        confirmPassword: document.querySelector('input[name="confirmPassword"]')
+          .value,
+      };
+
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert('❌ Erro: ' + data.message);
+        } else {
+          // Sucesso no registo
+          sessionStorage.setItem('userCreatedSuccess', 'true');
+          console.log('✅ Utilizador criado com sucesso');
+          //alert('✅ Utilizador criado com sucesso!');
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Erro ao enviar formulário:', error);
+        alert('❌ Erro na comunicação com o servidor');
+      }
     });
   }
 </script>

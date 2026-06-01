@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import User from './User.js';
+import User from '../../models/User.js';
 
 export class UserManager {
-  constructor(filePath = 'database/users.json') {
+  constructor(filePath = 'database/database-my-reserved-blog.json') {
     this.filePath = path.resolve(filePath);
     this.users = this.loadUsers();
   }
@@ -24,7 +24,7 @@ export class UserManager {
         return [];
       } else {
         // Outro erro
-        console.error('Erro ao ler ficheiro de utilizadores:', error.message);    
+        console.error('Erro ao ler ficheiro de utilizadores:', error.message);
         return [];
       }
     }
@@ -56,6 +56,9 @@ export class UserManager {
   // Obter utilizador por email
   getUserByEmail(email) {
     return this.users.find((user) => user.email === email);
+  }
+  getUserName(databaseUsername) {
+    return this.users.find((user) => user.username === databaseUsername);
   }
 
   // Atualizar utilizador

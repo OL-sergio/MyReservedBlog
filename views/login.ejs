@@ -1,4 +1,8 @@
 <%- include('partials/nav-no-navigation.ejs') %>
+<!--TODO: Melhorar a interface de
+erro, para não ser apenas um texto, mas sim um card bonito a informar o
+utilizador do erro e como resolver, e também adicionar uma animação hover para
+dar um toque mais interativo.-->
 
 <div class="divider-froms" style="height: 10dvh"></div>
 
@@ -23,11 +27,11 @@
               name="email"
               type="email"
               class="form-control rounded-3"
-              id="floatingInput"
+              id="emailInput"
               placeholder="name@example.com"
               required
             />
-            <label for="floatingInput">Email address</label>
+            <label for="emailInput">Email address</label>
           </div>
           <div class="form-floating mb-3">
             <input
@@ -39,6 +43,13 @@
               required
             />
             <label for="floatingPassword">Password</label>
+            <small
+              id="passwordError"
+              class="text-danger d-none mt-2"
+              style="display: block; font-size: 0.875rem"
+            >
+              ❌ Password not valid. Please enter a valid password.
+            </small>
             <kpm-field-badge
               style="--FieldBadge-ZLevel: 1057 !important"
               type="default"
@@ -119,15 +130,213 @@
 
 <%- include('partials/footer-no-navigation.ejs') %>
 
-<!-- Script para marcar sucesso na login de utilizador -->
 <script>
-  // Quando o formulário de registo for submetido com sucesso
+  //TODO: Modificar os alertas para serem mais bonitos e informativos, em vez de simples pop-ups, criar um card de alerta que apareça abaixo do formulário com a mensagem de erro e dicas para resolver, e adicionar uma animação hover para dar um toque mais interativo.
+  //TODO: Passar a codigo para um ficheiro JS externo para manter o código mais organizado e limpo, e facilitar a manutenção futura.
+  const emailInput = document.getElementById('emailInput');
+  const passwordInput = document.querySelector('input[name="password"]');
+  const passwordError = document.getElementById('passwordError');
   const form = document.querySelector('.login-user');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  let failedAttempts = parseInt(sessionStorage.getItem('loginAttempts')) || 0;
+  const lockoutTimestamp = sessionStorage.getItem('loginLockoutTime');
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_TIME = 5 * 60 * 1000; // 5 minutos
+
+  // Verificar se bloqueio ainda está ativo ao carregar página
+  function checkExistingLockout() {
+    if (lockoutTimestamp) {
+      const now = Date.now();
+      const timeElapsed = now - parseInt(lockoutTimestamp);
+
+      if (timeElapsed < LOCKOUT_TIME) {
+        const timeRemaining = Math.ceil((LOCKOUT_TIME - timeElapsed) / 1000);
+        lockForm(timeRemaining, true); // true = bloqueio existente, não guardar novo timestamp
+      } else {
+        // Bloqueio expirou
+        unlockForm();
+      }
+    } else if (failedAttempts > 0) {
+      // Se há tentativas falhadas mas sem bloqueio, mostrar o estado
+      updatePasswordErrorDisplay(failedAttempts);
+    }
+  }
+
+  // Atualizar display do erro de password
+  function updatePasswordErrorDisplay(attempts) {
+    if (attempts > 0) {
+      passwordInput.style.borderColor = '#dc3545';
+      passwordInput.style.borderWidth = '2px';
+      passwordError.classList.remove('d-none');
+      passwordError.textContent = `❌ Invalid credentials. Attempts: ${attempts}/${MAX_ATTEMPTS}`;
+    } else {
+      clearPasswordError();
+    }
+  }
+
+  // Limpar erro de password
+  function clearPasswordError() {
+    passwordInput.style.borderColor = '';
+    passwordInput.style.borderWidth = '';
+    passwordError.classList.add('d-none');
+    passwordError.textContent =
+      '❌ Password not valid. Please enter a valid password.';
+  }
+
+  // Função para validar que os campos estão preenchidos
+  function validateForm() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!email || !password) {
+      alert('❌ Email and password are required');
+      //showAlert('❌ Email and password are required', { color: '#dc3545', width: '320px', height: '48px', fontSize: '14px' });
+
+      return false;
+    }
+
+    return true;
+  }
+
+  // Recolher dados do formulário
+  function getFormData() {
+    return {
+      email: emailInput.value.trim(),
+      password: passwordInput.value.trim(),
+    };
+  }
+
+  // Bloquear formulário após múltiplas tentativas
+  function lockForm(timeRemaining = 300, isExistingLockout = false) {
+    emailInput.disabled = true;
+    passwordInput.disabled = true;
+    submitButton.disabled = true;
+    submitButton.style.opacity = '0.5';
+    submitButton.style.cursor = 'not-allowed';
+
+    // Mudar cor do password input para vermelho
+    passwordInput.style.borderColor = '#dc3545';
+    passwordInput.style.borderWidth = '2px';
+
+    const minutes = Math.ceil(timeRemaining / 60);
+    submitButton.textContent = `🔒 Locked (${minutes} min)`;
+
+    // Mostrar erro com tempo de bloqueio
+    passwordError.classList.remove('d-none');
+    passwordError.textContent = `🔒 Too many attempts. Locked for ${minutes} min`;
+
+    // Guardar timestamp do bloqueio APENAS se for novo bloqueio (não restauração)
+    if (!isExistingLockout) {
+      sessionStorage.setItem('loginLockoutTime', Date.now().toString());
+      sessionStorage.setItem('loginAttempts', failedAttempts.toString());
+    }
+
+    // Countdown do bloqueio
+    let remaining = timeRemaining;
+    const countdown = setInterval(() => {
+      remaining--;
+      const mins = Math.ceil(remaining / 60);
+      submitButton.textContent = `🔒 Locked (${mins} min)`;
+      passwordError.textContent = `🔒 Too many attempts. Locked for ${mins} min`;
+
+      if (remaining <= 0) {
+        clearInterval(countdown);
+        unlockForm();
+      }
+    }, 1000);
+  }
+
+  // Desbloquear formulário
+  function unlockForm() {
+    emailInput.disabled = false;
+    passwordInput.disabled = false;
+    submitButton.disabled = false;
+    submitButton.textContent = 'Sign in';
+    submitButton.style.opacity = '1';
+    submitButton.style.cursor = 'pointer';
+    failedAttempts = 0;
+
+    clearPasswordError();
+
+    // Limpar dados do sessionStorage
+    sessionStorage.removeItem('loginAttempts');
+    sessionStorage.removeItem('loginLockoutTime');
+
+    console.log('✅ Form unlocked');
+  }
+
+  // Incrementar contador de tentativas
+  function incrementAttempts() {
+    failedAttempts++;
+    sessionStorage.setItem('loginAttempts', failedAttempts.toString());
+    return failedAttempts;
+  }
+
+  // Reset ao contador
+  function resetAttempts() {
+    failedAttempts = 0;
+    sessionStorage.removeItem('loginAttempts');
+    sessionStorage.removeItem('loginLockoutTime');
+    clearPasswordError();
+  }
+
+  // Quando o formulário for submetido
   if (form) {
-    form.addEventListener('submit', (e) => {
-      // Marcar no sessionStorage que um utilizador foi criado com sucesso
-      // Isso será verificado na página index.ejs
-      sessionStorage.setItem('userLoginSuccess', 'true');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Verificar se está bloqueado
+      if (submitButton.disabled) {
+        alert('❌ Form is locked. Please wait before trying again.');
+        return;
+      }
+
+      // Validar formulário
+      if (!validateForm()) return;
+
+      const formData = getFormData();
+
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          const attempts = incrementAttempts();
+          console.error('❌ Login error:', data.message);
+          console.log(`Attempt ${attempts}/${MAX_ATTEMPTS}`);
+
+          if (attempts >= MAX_ATTEMPTS) {
+            lockForm();
+          } else {
+            updatePasswordErrorDisplay(attempts);
+          }
+        } else {
+          // Sucesso no login
+          resetAttempts();
+          sessionStorage.setItem('userLoginSuccess', 'true');
+          console.log('✅ Login successful for:', data.user.username);
+          window.location.href = '/';
+        }
+      } catch (error) {
+        const attempts = incrementAttempts();
+        console.error('❌ Error sending form:', error);
+        console.log(`Attempt ${attempts}/${MAX_ATTEMPTS}`);
+
+        if (attempts >= MAX_ATTEMPTS) {
+          lockForm();
+        } else {
+          updatePasswordErrorDisplay(attempts);
+        }
+      }
     });
   }
+
+  // Verificar bloqueio ao carregar página
+  checkExistingLockout();
 </script>
