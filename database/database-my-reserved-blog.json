@@ -58,35 +58,5 @@
     "isActive": true,
     "createdAt": "2026-06-01T16:36:03.332Z",
     "updatedAt": "2026-06-01T16:36:03.332Z"
-  },
-  {
-    "id": 7,
-    "username": "se",
-    "email": "sergio1212@email.com",
-    "password": "r%EX2vb@/jvjZ:j2",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-08T15:40:00.525Z",
-    "updatedAt": "2026-06-08T15:40:00.525Z"
-  },
-  {
-    "id": 8,
-    "username": "adasda",
-    "email": "sdadadasdasda@gmail.oc",
-    "password": "+Kq,S8RezD9QJ$F",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-08T16:09:55.512Z",
-    "updatedAt": "2026-06-08T16:09:55.512Z"
-  },
-  {
-    "id": 9,
-    "username": "adasd",
-    "email": "adad@aafaf.com",
-    "password": "+Kq,S8RezD9QJ$F",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-08T16:13:53.964Z",
-    "updatedAt": "2026-06-08T16:13:53.964Z"
   }
 ]
