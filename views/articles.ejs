@@ -1,4 +1,8 @@
-<%- include('partials/navigation.ejs') %>
+<% if (isAuthenticated && user) { %>
+  <%- include('partials/nav-registered-user.ejs', { user: user }) %>
+<% } else { %>
+  <%- include('partials/navigation.ejs') %>
+<% } %>
 
 <div>
   <h1>Articles Page</h1>

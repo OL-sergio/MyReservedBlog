@@ -1,0 +1,14 @@
+<% if (isAuthenticated && user) { %>
+  <%- include('partials/nav-registered-user.ejs', { user: user }) %>
+<% } else { %>
+  <%- include('partials/navigation.ejs') %>
+<% } %>
+
+//TODO: Add editpage and delete page for articles, and add the links to the articles page.
+//https://quilljs.com/docs/quickstart
+//https://cdn.ckeditor.com
+<div>
+  <h1>Article Form</h1>
+</div>
+
+<%- include('partials/footer.ejs') %>
