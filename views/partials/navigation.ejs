@@ -24,14 +24,9 @@
     <title>My Reserved Blog</title>
   </head>
   <body>
-    <!-- Main navigation header container -->
-
     <div class="container">
-      <!-- Header navigation bar with flexbox layout -->
-      <div
-        class="d-flex flex-row align-items-center justify-content-between justify-content-lg-center my-5"
-      >
-        <!-- Logo/Brand link -->
+      <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <!-- Brand/Logo -->
         <a
           href="/"
           class="d-flex align-items-center mb-lg-0 link-body-emphasis text-decoration-none ms-5"
@@ -72,70 +67,83 @@
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
+          data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Navigation menu links -->
-        <ul
-          class="nav d-flex flex-row align-items-auto justify-content-auto justify-content-lg-auto me-auto mb-lg-12 me-4"
-        >
-          <li class="m-0 p-0">
-            <a href="/" class="nav-link link-secondary">Home</a>
-          </li>
-          <li>
-            <a href="/articles" class="nav-link link-body-emphasis">Articles</a>
-          </li>
-          <li class="m-0 p-0">
-            <a href="https://twitter.com" class="nav-link text-black">
-              <svg class="bi" width="0" height="0" role="img" aria-label="Home">
+        <!-- Navbar items -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav ms-auto align-items-center gap-2">
+            <!-- Social Media Icons -->
+            <li class="m-0 p-0">
+              <a href="/" class="nav-link link-secondary">Home</a>
+            </li>
+            <li>
+              <a href="/articles" class="nav-link link-body-emphasis"
+                >Articles</a
+              >
+            </li>
+            <li class="m-0 p-0">
+              <a href="https://twitter.com" class="nav-link text-black">
+                <svg
+                  class="bi"
+                  width="0"
+                  height="0"
+                  role="img"
+                  aria-label="Home"
                 >
-                <i class="bi bi-twitter-x"></i>
-              </svg>
-            </a>
-          </li>
-          <li class="m-0 p-0">
-            <a href="https://linkedin.com" class="nav-link text-black">
-              <svg class="bi" class="bi" width="0" height="0" role="img">
-                <i class="bi bi-linkedin"></i>
-              </svg>
-            </a>
-          </li>
-          <li class="m-0 p-0">
-            <a href="https://instagram.com" class="nav-link text-black">
-              <svg class="bi" width="0" height="0" role="img">
-                <i class="bi bi-instagram"></i>
-              </svg>
-            </a>
-          </li>
-        </ul>
-        <div class="d-flex flex-row ms-3 me-5">
-          <a
-            href="/login"
-            class="btn btn-sm me-3"
-            style="
-              border: 3px solid #000;
-              border-radius: 6px;
-              color: #000;
-              background: #fff;
-              text-decoration: none;
-            "
-          >
-            Login
-          </a>
-          <a
-            href="/register"
-            class="btn btn-sm me-2 btn-primary"
-            style="text-decoration: none"
-          >
-            Sign up
-          </a>
+                  >
+                  <i class="bi bi-twitter-x"></i>
+                </svg>
+              </a>
+            </li>
+
+            <li class="m-0 p-0">
+              <a href="https://linkedin.com" class="nav-link text-black">
+                <svg class="bi" class="bi" width="0" height="0" role="img">
+                  <i class="bi bi-linkedin"></i>
+                </svg>
+              </a>
+            </li>
+            <li class="m-0 p-0">
+              <a href="https://instagram.com" class="nav-link text-black">
+                <svg class="bi" width="0" height="0" role="img">
+                  <i class="bi bi-instagram"></i>
+                </svg>
+              </a>
+            </li>
+            <li class="d-flex flex-row align-content-between ms-3 me-5">
+              <a
+                href="/login"
+                class="btn btn-sm me-3"
+                style="
+                  border: 3px solid #000;
+                  border-radius: 6px;
+                  color: #000;
+                  background: #fff;
+                  text-decoration: none;
+                "
+              >
+                Login
+              </a>
+              <a
+                href="/register"
+                class="btn btn-sm me-3 btn-primary"
+                style="text-decoration: none"
+              >
+                Sign up
+              </a>
+            </li>
+          </ul>
         </div>
-      </div>
+      </nav>
     </div>
+
+    <!-- Bootstrap 5 Bundle JS (includes Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

@@ -11,13 +11,13 @@ const usersManager = new UsersManager(
 
 // TODO: render.com provides the PORT and HOST environment variables,
 // so we need to use those instead of hardcoding them
-//const PORT = process.env.PORT || 10000;
-// const HOST = process.env.HOST || '0.0.0.0';
+const PORT = process.env.PORT || 10000;
+const HOST = process.env.HOST || '0.0.0.0';
 
 // TODO: For local development, you can uncomment the lines
 //  below and comment out the lines above
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || 'localhost';
+//const PORT = process.env.PORT || 3000;
+//const HOST = process.env.HOST || 'localhost';
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -34,7 +34,7 @@ app.use(
     secret: 'your-secret-key-change-this',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true, maxAge: 3600000 }, // 1 hour
+    cookie: { secure: false, httpOnly: true, maxAge: 3600000 * 12 }, // 12 hour
   })
 );
 
@@ -53,7 +53,55 @@ app.get('/', (req, res) => {
 });
 
 app.get('/articles', (req, res) => {
-  res.render('articles.ejs');
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+
+  res.render('articles.ejs', { isAuthenticated, user });
+});
+
+app.get('/articles-form', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+
+  res.render('articles-form.ejs', { isAuthenticated, user });
+});
+
+app.get('/my-articles', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+
+  res.render('my-articles.ejs', { isAuthenticated, user });
+});
+
+app.get('/my-profile', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+
+  res.render('my-profile.ejs', { isAuthenticated, user });
 });
 
 app.get('/login', (req, res) => {
