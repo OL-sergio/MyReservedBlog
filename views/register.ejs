@@ -372,7 +372,8 @@ dar um toque mais interativo.-->
         confirmPasswordInput.style.borderColor = '#dc3545';
         confirmPasswordInput.style.borderWidth = '2px';
         confirmPasswordError.classList.remove('d-none');
-        confirmPasswordError.textContent = '❌ A confirmação da password é obrigatória';
+        confirmPasswordError.textContent =
+          '❌ A confirmação da password é obrigatória';
         // alert('❌ A confirmação da password é obrigatória');
         return;
       }
@@ -386,7 +387,6 @@ dar um toque mais interativo.-->
         confirmPasswordError.textContent = '❌ As passwords não correspondem';
         // alert('❌ As passwords não correspondem');
         return;
-        
       } else {
         passwordInput.style.borderColor = '#198754';
         passwordInput.style.borderWidth = '2px';

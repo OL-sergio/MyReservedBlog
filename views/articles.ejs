@@ -1,15 +1,49 @@
-<% if (isAuthenticated && user) { %>
+<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
   <%- include('partials/nav-registered-user.ejs', { user: user }) %>
 <% } else { %>
   <%- include('partials/navigation.ejs') %>
 <% } %>
+ 
 
+   <!--
+    TODO: Add CSS to the preview window for better styling
+    TODO: User can also preview the article with the excerpt and tags, and maybe a "back" button to return to the form.
+    TODO: Add the user name and date to the preview window, maybe with a "back" button to return to the form.
 
-
-  <div>
-    <h1>Articles Page</h1>
-  </div>
-
-
-
-<%- include('partials/footer.ejs') %>
+    -->
+<div class="container py-4">
+  <h1 class="mb-3">Articles</h1>
+  <% if (typeof articles !== 'undefined' && articles && articles.length > 0) { %>
+    <div class="row g-3">
+      <% articles.forEach((a) => { %>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title"> <%= a.title %></h5>
+              <% if (a.excerpt) { %>
+                <p class="card-text text-muted"><%= a.excerpt %></p>
+              <% } %>
+              <div class="mt-auto d-flex flex-column gap-2">
+                <small class="text-muted">
+                  <%= a.published ? 'Published' : 'Draft' %>
+                </small>
+                <small class="text-muted">
+                  <%= a.createdAt ? new Date(a.createdAt).toLocaleDateString() : '' %>
+                </small>
+                <a
+                  class="btn btn-primary"
+                  href="#"
+                  role="button"
+                  onclick="window.dispatchEvent(new CustomEvent('open-article', { detail: { id: '<%= a.id %>' } }))"
+                >
+                  Read
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="text-muted">No articles yet.</p>
+  <% } %>

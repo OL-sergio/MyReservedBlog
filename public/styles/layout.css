@@ -151,3 +151,7 @@ h1 {
     var(--bs-link-opacity, 1)
   ) !important;
 }
+
+.editorText {
+  height: 50vh;
+}

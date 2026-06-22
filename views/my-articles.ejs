@@ -1,10 +1,11 @@
-<% if (isAuthenticated && user) { %>
+<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
   <%- include('partials/nav-registered-user.ejs', { user: user }) %>
 <% } else { %>
   <%- include('partials/navigation.ejs') %>
 <% } %>
 
 
+s
 
   <div>
     <h1>My Articles Page</h1>

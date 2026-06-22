@@ -1,5 +1,5 @@
 <!-- Renderizar navegação baseada na autenticação -->
-<% if (isAuthenticated && user) { %>
+<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
   <%- include('partials/nav-registered-user.ejs', { user: user }) %>
 <% } else { %>
   <%- include('partials/navigation.ejs') %>
@@ -304,6 +304,7 @@
     </button>
   </div>
 </div>
+
 <div class="divider"></div>
 
 <%- include('partials/footer.ejs') %>

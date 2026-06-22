@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import process from 'process';
 import session from 'express-session';
 import UsersManager from './public/js/database-users-manager.js';
+import { ArticleModel } from './public/js/articles-manager.js';
 
 const app = express();
 const usersManager = new UsersManager(
@@ -28,17 +29,24 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session middleware
+// Session middleware~
 app.use(
   session({
     secret: 'your-secret-key-change-this',
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true, maxAge: 3600000 * 12 }, // 12 hour
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 3600000 * 12, // 12 hour
+    },
   })
 );
 
-// Routes
+//Main route
 app.get('/', (req, res) => {
   const isAuthenticated = req.session.userId ? true : false;
   const user = isAuthenticated
@@ -62,20 +70,10 @@ app.get('/articles', (req, res) => {
       }
     : null;
 
-  res.render('articles.ejs', { isAuthenticated, user });
-});
+  // mostrar artigos (podes trocar para true se quiser só publicados)
+  const articles = ArticleModel.getAll({ publishedOnly: true });
 
-app.get('/articles-form', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
-
-  res.render('articles-form.ejs', { isAuthenticated, user });
+  res.render('articles.ejs', { isAuthenticated, user, articles });
 });
 
 app.get('/my-articles', (req, res) => {
@@ -116,14 +114,119 @@ app.get('/users', (req, res) => {
   res.json(usersManager.getAllUsers());
 });
 
-// DEBUG - Testar busca por email
-app.get('/debug/user/:email', (req, res) => {
-  const user = usersManager.getUserByEmail(req.params.email);
-  res.json({
-    email: req.params.email,
-    found: user ? true : false,
-    user: user || { message: 'Utilizador não encontrado' },
-  });
+app.get('/articles-form', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+
+  const successMessage = req.session.successMessage;
+  // flash message: show once (don't touch session unless needed)
+  if (successMessage) {
+    req.session.successMessage = undefined;
+  }
+
+  res.render('articles-form.ejs', { isAuthenticated, user, successMessage });
+});
+
+//POST - criar artigo (salva em data/articles.json)
+//FIX:  não é possivel visualizar os mensagem  ao criar artigo
+//FIX:  ao criar o artigo o utilizador nao fica com sessão.
+app.post('/articles-form', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  const user = isAuthenticated
+    ? {
+        id: req.session.userId,
+        username: req.session.username,
+        email: req.session.email,
+      }
+    : null;
+  if (!isAuthenticated) {
+    return res.render('login.ejs', {
+      isAuthenticated,
+      user,
+      message: 'Unauthorized',
+    });
+  }
+  try {
+    const created = ArticleModel.create({
+      title: req.body.title,
+
+      excerpt: req.body.excerpt,
+      content: req.body.content,
+      published: req.body.published,
+
+      // garante que userID/author pertencem sempre ao utilizador logado
+      userID: req.session.userId,
+      author: req.session.username,
+
+      tags: req.body.tags ?? [],
+    });
+
+    // PRG pattern: POST -> redirect avoids re-rendering issues and keeps session intact
+    console.log('Articles data: ', created);
+
+    // Flash message via session (locals do not survive redirects)
+    req.session.successMessage = 'Article created successfully!';
+
+    // redirect back to the form page so the flash message shows correctly
+    return res.redirect('/articles-form');
+  } catch (e) {
+    // classic HTML form submit: re-render the form (not login) with error
+    return res.status(400).render('articles-form.ejs', {
+      isAuthenticated,
+      user,
+      errorMessage: e.message,
+    });
+  }
+});
+
+// -------------------------
+// Articles API (JSON file)
+// Uses: public/js/articles-manager.js -> data/articles.json
+// -------------------------
+
+// GET - listar artigos
+app.get('/articles-api', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  // podes trocar publishedOnly para true se quiseres só publicados
+  const articles = ArticleModel.getAll({ publishedOnly: false });
+  res.json(articles);
+});
+
+// GET - artigo por id
+app.get('/articles-api/:id', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const article = ArticleModel.getById(req.params.id);
+  if (!article) return res.status(404).json({ message: 'Article not found' });
+
+  res.json(article);
+});
+
+// PUT - atualizar artigo
+app.put('/articles-api/:id', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  // ownership (userID/author) é fixo no ArticleModel.update()
+  const updated = ArticleModel.update(req.params.id, req.body);
+  if (!updated) return res.status(404).json({ message: 'Article not found' });
+
+  res.json(updated);
 });
 
 // POST - Login de utilizador
@@ -274,6 +377,42 @@ app.post('/register', (req, res) => {
   });
 });
 
+// GET - Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Erro ao fazer logout:', err);
+    }
+    console.log('✅ Logout realizado');
+    res.redirect('/');
+  });
+});
+
+//experimental routes for testing the UsersManager class
+
+// DELETE - remover artigo
+app.delete('/articles-api/:id', (req, res) => {
+  const isAuthenticated = req.session.userId ? true : false;
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const ok = ArticleModel.remove(req.params.id);
+  if (!ok) return res.status(404).json({ message: 'Article not found' });
+
+  res.json({ success: true });
+});
+
+// DEBUG - Testar busca por email
+app.get('/debug/user/:email', (req, res) => {
+  const user = usersManager.getUserByEmail(req.params.email);
+  res.json({
+    email: req.params.email,
+    found: user ? true : false,
+    user: user || { message: 'Utilizador não encontrado' },
+  });
+});
+
 // PUT - Atualizar utilizador
 app.put('/users/:id', (req, res) => {
   const updatedUser = usersManager.updateUser(
@@ -287,6 +426,12 @@ app.put('/users/:id', (req, res) => {
   }
 });
 
+// DELETE - Eliminar utilizador
+app.delete('/users/:id', (req, res) => {
+  usersManager.deleteUser(parseInt(req.params.id));
+  res.json({ message: 'Utilizador eliminado' });
+});
+
 // GET - Obter utilizador por ID
 app.get('/users/:id', (req, res) => {
   const user = usersManager.getUserById(parseInt(req.params.id));
@@ -295,23 +440,6 @@ app.get('/users/:id', (req, res) => {
   } else {
     res.status(404).json({ message: 'Utilizador não encontrado' });
   }
-});
-
-// DELETE - Eliminar utilizador
-app.delete('/users/:id', (req, res) => {
-  usersManager.deleteUser(parseInt(req.params.id));
-  res.json({ message: 'Utilizador eliminado' });
-});
-
-// GET - Logout
-app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Erro ao fazer logout:', err);
-    }
-    console.log('✅ Logout realizado');
-    res.redirect('/');
-  });
 });
 
 // Start server
