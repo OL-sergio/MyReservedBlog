@@ -133,9 +133,7 @@ app.get('/articles-form', (req, res) => {
   res.render('articles-form.ejs', { isAuthenticated, user, successMessage });
 });
 
-//POST - criar artigo (salva em data/articles.json)
-//FIX:  não é possivel visualizar os mensagem  ao criar artigo
-//FIX:  ao criar o artigo o utilizador nao fica com sessão.
+
 app.post('/articles-form', (req, res) => {
   const isAuthenticated = req.session.userId ? true : false;
   const user = isAuthenticated
