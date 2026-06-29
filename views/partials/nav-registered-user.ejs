@@ -33,7 +33,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
     />
-    
+
     <!-- Custom stylesheets -->
     <link rel="stylesheet" href="/styles/content.css" />
     <link rel="stylesheet" href="/styles/layout.css" />
@@ -167,8 +167,16 @@
                   class="rounded-circle border border-2"
                 />
                 <div>
-                  <h6 class="mb-0 fw-bold">John Doe</h6>
-                  <small class="text-muted">john@example.com</small>
+                  <h6 class="mb-0 fw-bold">
+                    <% if (typeof user !== 'undefined' && user && user.username)
+                    { %> <%= user.username %> <%} else { %> Guest <% } %>
+                  </h6>
+
+                  <small class="text-muted">
+                    <% if (typeof user !== 'undefined' && user && user.email) {
+                    %> <%= user.email %> <% } else { %> guest@example.com <% }
+                    %>
+                  </small>
                 </div>
               </li>
 

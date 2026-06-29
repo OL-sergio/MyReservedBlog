@@ -13,7 +13,7 @@
     "id": 2,
     "username": "joao",
     "email": "joao@email.com",
-    "password": "K?\"K]w@hef~(,X%9",
+    "password": "K?K]w@hef~(,X%9",
     "role": "user",
     "isActive": true,
     "createdAt": "2026-05-11T17:34:11.834Z",
@@ -43,7 +43,7 @@
     "id": 5,
     "username": "ana",
     "email": "ana@email.com",
-    "password": "_w8bFY\"Kt[?U*#7>",
+    "password": "_w8bFYKt[?U*#7>",
     "role": "user",
     "isActive": true,
     "createdAt": "2026-05-11T17:42:02.461Z",
@@ -51,12 +51,34 @@
   },
   {
     "id": 6,
-    "username": "sadad",
-    "email": "sadadad@gmail.com",
-    "password": ";zG>Z<C,69$wmFs)",
+    "username": "sergioteste4",
+    "email": "sergioteste4@live.com",
+    "password": "F^.~7i^'^ky#W~P8",
     "role": "user",
     "isActive": true,
-    "createdAt": "2026-06-01T16:36:03.332Z",
-    "updatedAt": "2026-06-01T16:36:03.332Z"
+    "createdAt": "2026-06-29T00:00:00.000Z",
+    "updatedAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "id": 7,
+    "username": "sergioteste7",
+    "email": "sergioteste7@live.com",
+    "password": "hRjh#7fj*2=E}cd",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-06-29T16:45:35.509Z",
+    "updatedAt": "2026-06-29T16:45:35.509Z"
+  },
+  {
+    "id": 8,
+    "username": "sergiotest1",
+    "email": "sergiotest1@email.com",
+    "password": "hRjh#7fj*2=E}cd",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-06-29T17:27:19.617Z",
+    "updatedAt": "2026-06-29T17:27:19.617Z"
   }
 ]

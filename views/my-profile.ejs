@@ -1,16 +1,9 @@
 <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
-  <%- include('partials/nav-registered-user.ejs', { user: user }) %>
-<% } else { %>
-  <%- include('partials/navigation.ejs') %>
-<% } %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
 
-
-
-
-  <div>
-    <h1>My Profile Page</h1>
-  </div>
-
-
+<div>
+  <h1>My Profile Page</h1>
+</div>
 
 <%- include('partials/footer.ejs') %>

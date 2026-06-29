@@ -2,23 +2,19 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import process from 'process';
 import session from 'express-session';
-import UsersManager from './public/js/database-users-manager.js';
+import { UserManager } from './public/js/users-manager.js';
 import { ArticleModel } from './public/js/articles-manager.js';
 
 const app = express();
-const usersManager = new UsersManager(
-  './database/database-my-reserved-blog.json'
-);
-
 // TODO: render.com provides the PORT and HOST environment variables,
 // so we need to use those instead of hardcoding them
-const PORT = process.env.PORT || 10000;
-const HOST = process.env.HOST || '0.0.0.0';
+//const PORT = process.env.PORT || 10000;
+//const HOST = process.env.HOST || '0.0.0.0';
 
 // TODO: For local development, you can uncomment the lines
 //  below and comment out the lines above
-//const PORT = process.env.PORT || 3000;
-//const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || 'localhost';
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -86,7 +82,18 @@ app.get('/my-articles', (req, res) => {
       }
     : null;
 
-  res.render('my-articles.ejs', { isAuthenticated, user });
+  // Use ArticleModel (articles-manager) and filter by ownership.
+  // Stored ownership field (see articles-manager.js) is `userID`.
+  const allArticles = ArticleModel.getAll({ publishedOnly: false });
+  const myArticles = isAuthenticated
+    ? allArticles.filter((a) => String(a.userID) === String(req.session.userId))
+    : [];
+
+  res.render('my-articles.ejs', {
+    isAuthenticated,
+    user,
+    articles: myArticles,
+  });
 });
 
 app.get('/my-profile', (req, res) => {
@@ -111,7 +118,7 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-  res.json(usersManager.getAllUsers());
+  res.json(UserManager.getAll());
 });
 
 app.get('/articles-form', (req, res) => {
@@ -132,7 +139,6 @@ app.get('/articles-form', (req, res) => {
 
   res.render('articles-form.ejs', { isAuthenticated, user, successMessage });
 });
-
 
 app.post('/articles-form', (req, res) => {
   const isAuthenticated = req.session.userId ? true : false;
@@ -236,24 +242,48 @@ app.post('/login', (req, res) => {
   // Validar dados
   if (!email || !password) {
     console.log('❌ Email ou password vazios');
-    return res.status(400).send('<h1>Email e password são obrigatórios</h1>');
+    return res.status(400).json({
+      success: false,
+      message: 'Email e password são obrigatórios',
+    });
+  }
+
+  // Normalização de email (alinhada com UserManager.getByEmail)
+  // Mantém caracteres especiais do local-part e apenas ajusta trim + casing.
+  const normalizedEmail = String(email).trim().toLowerCase();
+
+  // Validar formato de email (para evitar lookup desnecessário)
+  // (mantém um regex simples compatível com os requisitos do projeto)
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(normalizedEmail)) {
+    return res.status(400).json({ success: false, message: 'Email inválido' });
   }
 
   // Procurar utilizador por email
-  const user = usersManager.getUserByEmail(email);
-  if (!user) {
-    console.log('❌ Utilizador não encontrado:', email);
-    return res.status(401).send('<h1>Email ou password incorretos</h1>');
-  }
+  const user = UserManager.getByEmail(normalizedEmail);
 
-  console.log('👤 Utilizador encontrado:', user.username);
-  console.log('🔑 Password guardada:', user.password);
-  console.log('🔑 Password fornecida:', password);
+  // Unificar mensagem para não revelar se o email existe ou não
+  const invalidCredentials = () =>
+    res.status(401).json({
+      success: false,
+      message: 'Email ou password incorretos',
+    });
+
+  if (!user) {
+    console.log('❌ Utilizador não encontrado para:', normalizedEmail);
+    return invalidCredentials();
+  }
 
   // Verificar password (para agora, comparação simples - depois usar bcrypt)
   if (user.password !== password) {
-    console.log('❌ Password incorreta para:', email);
-    return res.status(401).send('<h1>Email ou password incorretos</h1>');
+    // Debug seguro: não imprime a password (evita expor segredos), mas ajuda
+    // a perceber se o valor recebido difere (ex.: escaping/encoding).
+    console.warn('❌ Password incorreta para:', normalizedEmail, {
+      storedPasswordLength: String(user.password ?? '').length,
+      receivedPasswordLength: String(password ?? '').length,
+    });
+
+    return invalidCredentials();
   }
 
   // Criar sessão
@@ -269,9 +299,8 @@ app.post('/login', (req, res) => {
     }
 
     console.log('✅ Sessão guardada para:', user.username);
-    console.log('✅ Utilizador autenticado:', user.username);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'Login realizado com sucesso',
       user: {
@@ -286,8 +315,9 @@ app.post('/login', (req, res) => {
 // POST - Criar novo utilizador
 app.post('/register', (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
-  const existingUser = usersManager.getUserName(username);
-  const existingEmail = usersManager.getUserByEmail(email);
+
+  const existingUser = UserManager.getByUsername(username);
+  const existingEmail = UserManager.getByEmail(email);
 
   // Validar dados
   if (!username) {
@@ -329,8 +359,16 @@ app.post('/register', (req, res) => {
     });
   }
 
-  // Verificar se email já existe
-  if (existingEmail && existingEmail.email === email.trim()) {
+  // Verificar se email já existe (normalizado)
+  if (
+    existingEmail &&
+    String(existingEmail.email ?? '')
+      .trim()
+      .toLowerCase() ===
+      String(email ?? '')
+        .trim()
+        .toLowerCase()
+  ) {
     console.log('❌ Email já registado');
     return res.status(400).json({
       success: false,
@@ -338,7 +376,9 @@ app.post('/register', (req, res) => {
     });
   }
 
-  if (password.trim() !== confirmPassword.trim()) {
+  // Verificar se as passwords coincidem
+  // Important: do NOT trim password, otherwise special/leading/trailing spaces become different.
+  if (String(password ?? '') !== String(confirmPassword ?? '')) {
     console.log('❌ Password e confirm password não coincidem');
     return res.status(400).json({
       success: false,
@@ -346,7 +386,7 @@ app.post('/register', (req, res) => {
     });
   }
 
-  const newUser = usersManager.addUser(username, email, password);
+  const newUser = UserManager.create({ username, email, password });
   console.log('✅ Novo utilizador criado:', newUser);
 
   // Criar sessão também
@@ -403,7 +443,7 @@ app.delete('/articles-api/:id', (req, res) => {
 
 // DEBUG - Testar busca por email
 app.get('/debug/user/:email', (req, res) => {
-  const user = usersManager.getUserByEmail(req.params.email);
+  const user = UserManager.getByEmail(req.params.email);
   res.json({
     email: req.params.email,
     found: user ? true : false,
@@ -413,10 +453,7 @@ app.get('/debug/user/:email', (req, res) => {
 
 // PUT - Atualizar utilizador
 app.put('/users/:id', (req, res) => {
-  const updatedUser = usersManager.updateUser(
-    parseInt(req.params.id),
-    req.body
-  );
+  const updatedUser = UserManager.update(parseInt(req.params.id), req.body);
   if (updatedUser) {
     res.json(updatedUser);
   } else {
@@ -426,13 +463,21 @@ app.put('/users/:id', (req, res) => {
 
 // DELETE - Eliminar utilizador
 app.delete('/users/:id', (req, res) => {
-  usersManager.deleteUser(parseInt(req.params.id));
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'ID inv�lido' });
+  }
+  UserManager.remove(parseInt(req.params.id));
   res.json({ message: 'Utilizador eliminado' });
 });
 
 // GET - Obter utilizador por ID
 app.get('/users/:id', (req, res) => {
-  const user = usersManager.getUserById(parseInt(req.params.id));
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    return res.status(400).json({ message: 'ID inv�lido' });
+  }
+  const user = UserManager.getById(parseInt(req.params.id));
   if (user) {
     res.status(200).json(user);
   } else {

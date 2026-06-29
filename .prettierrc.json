@@ -6,5 +6,11 @@
   "trailingComma": "es5",
   "bracketSpacing": true,
   "htmlWhitespaceSensitivity": "css",
-  "printWidth": 80
+  "printWidth": 80,
+  "overrides": [
+    {
+      "files": "*.ejs",
+      "options": { "parser": "html" }
+    }
+  ]
 }

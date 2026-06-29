@@ -128,7 +128,7 @@ dar um toque mais interativo.-->
   </div>
 </div>
 
-<%- include('partials/footer-no-navigation.ejs') %>
+<%- include('partials/footer-no-links.ejs') %>
 
 <script>
   //TODO: Modificar os alertas para serem mais bonitos e informativos, em vez de simples pop-ups, criar um card de alerta que apareça abaixo do formulário com a mensagem de erro e dicas para resolver, e adicionar uma animação hover para dar um toque mais interativo.
@@ -319,6 +319,9 @@ dar um toque mais interativo.-->
         } else {
           // Sucesso no login
           resetAttempts();
+          // permitir troca de utilizador sem bloqueios persistirem
+          sessionStorage.removeItem('loginAttempts');
+          sessionStorage.removeItem('loginLockoutTime');
           sessionStorage.setItem('userLoginSuccess', 'true');
           console.log('✅ Login successful for:', data.user.username);
           window.location.href = '/';

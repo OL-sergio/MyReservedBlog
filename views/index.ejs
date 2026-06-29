@@ -1,9 +1,7 @@
 <!-- Renderizar navegação baseada na autenticação -->
 <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
-  <%- include('partials/nav-registered-user.ejs', { user: user }) %>
-<% } else { %>
-  <%- include('partials/navigation.ejs') %>
-<% } %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
 
 <!-- Success Message Container -->
 <div
@@ -12,9 +10,10 @@
   style="display: none"
 >
   <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Success!</strong> User created successfully. Welcome to our community!
+    <strong>Success!</strong> User created successfully. Welcome to our
+    community!
     <button
-      type="button"   
+      type="button"
       class="btn-close close-message-register-user"
       data-bs-dismiss="alert"
       aria-label="Close"
@@ -144,7 +143,11 @@
         />
         <div class="card-body">
           <h4 class="card-title fw-bold text-start my-3">Card title</h4>
-          <p class="card-text paragraph-truncate" id="card-text-1" data-toggle="readmore">
+          <p
+            class="card-text paragraph-truncate"
+            id="card-text-1"
+            data-toggle="readmore"
+          >
             This is a wider card with supporting text below as a natural lead-in
             to additional content. This content is a little bit longer.
           </p>
@@ -178,7 +181,7 @@
           <p
             class="card-text text-body-secondary paragraph-truncate"
             id="card-text-2"
-           data-toggle="readmore"
+            data-toggle="readmore"
           >
             This is a wider card with supporting text below as a natural lead-in
             to additional content. This content is a little bit longer.
@@ -250,7 +253,11 @@
       <h1 class="display-5 fw-bold lh-1 text-start text-body-emphasis ms-5">
         Border hero with cropped
       </h1>
-      <p class="lead mt-5 mx-5 paragraph-truncate" id="card-text-4" data-toggle="readmore">
+      <p
+        class="lead mt-5 mx-5 paragraph-truncate"
+        id="card-text-4"
+        data-toggle="readmore"
+      >
         Quickly design and customize responsive mobile-first sites with
         Bootstrap, the world's most popular front-end open source toolkit,
         featuring Sass variables and mixins, responsive grid system, extensive
@@ -369,5 +376,4 @@
       }
     }
   });
-
 </script>

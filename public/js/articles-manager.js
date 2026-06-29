@@ -1,17 +1,21 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Article from '../../models/Articles.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Where your JSON data will be stored:
-// Use the existing articles file already present in your project
-const DATA_FILE = path.join(__dirname, '..', '..', 'database', 'database.json');
+const DATA_FILE = path.join(
+  __dirname,
+  '..',
+  '..',
+  'database',
+  'database-articles-my-reserved-blog.json'
+);
 
 function ensureDataFile() {
   const dir = path.dirname(DATA_FILE);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2), 'utf-8');
   }
@@ -34,7 +38,6 @@ function writeArticles(articles) {
 }
 
 export class ArticleModel {
-  // Return all articles (optionally only published)
   static getAll({ publishedOnly = false } = {}) {
     const articles = readArticles();
     if (!publishedOnly) return articles;
@@ -46,43 +49,25 @@ export class ArticleModel {
     return articles.find((a) => String(a.id) === String(id)) || null;
   }
 
-  static create({
-    title,
-    excerpt = '',
-    content,
-    published = false,
-    author = null, // username (compatibilidade com JSON existente)
-    userID = null, // user id logged (novo)
-    tags = [],
-  }) {
-    if (!title || !content) {
-      throw new Error('Missing required fields: title, content');
+  static create(data) {
+    const article = new Article(data);
+
+    // Validate using Article model
+    const validation = article.validate();
+    if (!validation.valid) {
+      throw new Error(validation.errors.join(', '));
     }
 
+    // Generate ID if not provided
+    article.id = Date.now();
+    article.createdAt = new Date().toISOString();
+    article.updatedAt = article.createdAt;
+
     const articles = readArticles();
-
-    const now = new Date().toISOString();
-    const article = {
-      id: Date.now(), // Simple unique ID based on timestamp
-      title,
-      excerpt,
-      content,
-      published: Boolean(published),
-
-      // novo campo: userID do utilizador logado
-      userID,
-      // manter author como "nome de utilizador" (ou compatibilidade)
-      author,
-
-      tags,
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    articles.push(article);
+    articles.push(article.toJSON());
     writeArticles(articles);
 
-    return article;
+    return article.toJSON();
   }
 
   static update(id, updates) {
@@ -90,24 +75,21 @@ export class ArticleModel {
     const index = articles.findIndex((a) => String(a.id) === String(id));
     if (index === -1) return null;
 
-    const now = new Date().toISOString();
-    const existing = articles[index];
+    const existing = new Article(articles[index]);
+    existing.update(updates);
 
-    // "fixar" ownership no update (não permitir alterar author/userID via body)
-    const updated = {
-      ...existing,
-      ...updates,
+    const validation = existing.validate();
+    if (!validation.valid) {
+      throw new Error(validation.errors.join(', '));
+    }
 
-      // garante que não muda com updates vindo do client
-      author: existing.author,
-      userID: existing.userID,
+    // Preserve ownership
+    existing.userID = articles[index].userID;
+    existing.author = articles[index].author;
 
-      updatedAt: now,
-    };
-
-    articles[index] = updated;
+    articles[index] = existing.toJSON();
     writeArticles(articles);
-    return updated;
+    return articles[index];
   }
 
   static remove(id) {
