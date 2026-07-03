@@ -1,0 +1,46 @@
+﻿<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
+
+<div class="container py-4">
+  <% if (article) { %>
+  <article>
+    <h1 class="mb-3"><%= article.title %></h1>
+    <div class="mb-3">
+      <small class="text-muted">
+        <%= article.published ? 'Published' : 'Draft' %> | <%= article.createdAt
+        ? new Date(article.createdAt).toLocaleDateString() : '' %>
+      </small>
+    </div>
+    <% if (article.excerpt) { %>
+    <p class="lead"><%= article.excerpt %></p>
+    <% } %>
+    <hr />
+    <div class="article-content"><%- article.content %></div>
+
+    <% const isOwner = user && article && String(user.id) ===
+    String(article.userID); %> <% if (isOwner) { %>
+    <div class="mt-4 d-flex gap-2">
+      <a class="btn btn-secondary" href="/my-articles" role="button">Back</a>
+      <a
+        class="btn btn-primary"
+        href="/articles-form?edit=<%= article.id %>"
+        role="button"
+        >Edit</a
+      >
+      <form
+        action="/view-article/<%= article.id %>/delete"
+        method="post"
+        onsubmit="return confirm('Delete this article?')"
+      >
+        <button class="btn btn-danger" type="submit">Delete</button>
+      </form>
+    </div>
+    <% } %>
+  </article>
+  <% } else { %>
+  <p class="text-muted">Article not found.</p>
+  <% } %>
+</div>
+
+<%- include('partials/footer.ejs') %>

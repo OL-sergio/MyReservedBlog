@@ -27,11 +27,11 @@
             </small>
             <a
               class="btn btn-primary"
-              href="#"
+              href="/view-article/<%= a.id ?? a._id %>"
               role="button"
               onclick="
                 window.dispatchEvent(
-                  new CustomEvent('open-article', {
+                  new CustomEvent('view-article', {
                     detail: { id: '<%= a.id ?? a._id %>' },
                   })
                 )

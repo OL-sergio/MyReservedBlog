@@ -14,11 +14,12 @@ const HOST = process.env.HOST || '0.0.0.0';
 // TODO: For local development, you can uncomment the lines
 //  below and comment out the lines above
 //const PORT = process.env.PORT || 3000;
-//const HOST = process.env.HOST || 'localhost';
+//const HOST = process.env.HOST || '0.0.0.0';
 
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', './views');
+app.set('trust proxy', 1);
 
 app.use(express.static('public'));
 
@@ -33,7 +34,7 @@ app.use(
     saveUninitialized: false,
     rolling: true,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
       sameSite: 'lax',
       path: '/',
@@ -42,9 +43,8 @@ app.use(
   })
 );
 
-//Main route
-app.get('/', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
+const getAuthContext = (req) => {
+  const isAuthenticated = Boolean(req.session.userId);
   const user = isAuthenticated
     ? {
         id: req.session.userId,
@@ -52,35 +52,28 @@ app.get('/', (req, res) => {
         email: req.session.email,
       }
     : null;
+
+  return { isAuthenticated, user };
+};
+
+//Main route
+app.get('/', (req, res) => {
+  const { isAuthenticated, user } = getAuthContext(req);
 
   res.render('index.ejs', { isAuthenticated, user });
 });
 
 app.get('/articles', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
+  const { isAuthenticated, user } = getAuthContext(req);
 
-  // mostrar artigos (podes trocar para true se quiser só publicados)
+  // mostrar artigos (podes trocar para true se quiser s� publicados)
   const articles = ArticleModel.getAll({ publishedOnly: true });
 
   res.render('articles.ejs', { isAuthenticated, user, articles });
 });
 
 app.get('/my-articles', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
+  const { isAuthenticated, user } = getAuthContext(req);
 
   // Use ArticleModel (articles-manager) and filter by ownership.
   // Stored ownership field (see articles-manager.js) is `userID`.
@@ -97,18 +90,33 @@ app.get('/my-articles', (req, res) => {
 });
 
 app.get('/my-profile', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
+  const { isAuthenticated, user } = getAuthContext(req);
 
   res.render('my-profile.ejs', { isAuthenticated, user });
 });
 
+app.get('/view-articles', (req, res) => {
+  const { isAuthenticated, user } = getAuthContext(req);
+
+  res.render('view-articles.ejs', { isAuthenticated, user });
+});
+
+// View a single article
+app.get('/view-article/:id', (req, res) => {
+  const { isAuthenticated, user } = getAuthContext(req);
+
+  const article = ArticleModel.getById(req.params.id);
+
+  if (!article) {
+    return res.status(404).render('error.ejs', {
+      isAuthenticated,
+      user,
+      message: 'Article not found',
+    });
+  }
+
+  res.render('view-article.ejs', { isAuthenticated, user, article });
+});
 app.get('/login', (req, res) => {
   res.render('login.ejs');
 });
@@ -122,14 +130,7 @@ app.get('/users', (req, res) => {
 });
 
 app.get('/articles-form', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
+  const { isAuthenticated, user } = getAuthContext(req);
 
   const successMessage = req.session.successMessage;
   // flash message: show once (don't touch session unless needed)
@@ -137,25 +138,71 @@ app.get('/articles-form', (req, res) => {
     req.session.successMessage = undefined;
   }
 
-  res.render('articles-form.ejs', { isAuthenticated, user, successMessage });
+  const editId = req.query.edit;
+  const article = editId ? ArticleModel.getById(editId) : null;
+
+  res.render('articles-form.ejs', {
+    isAuthenticated,
+    user,
+    successMessage,
+    article,
+  });
 });
 
 app.post('/articles-form', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  const user = isAuthenticated
-    ? {
-        id: req.session.userId,
-        username: req.session.username,
-        email: req.session.email,
-      }
-    : null;
+  const { isAuthenticated, user } = getAuthContext(req);
+
   if (!isAuthenticated) {
-    return res.render('login.ejs', {
-      isAuthenticated,
-      user,
-      message: 'Unauthorized',
-    });
+    return res.redirect('/login');
   }
+
+  // Check if updating an existing article
+  if (req.body.id) {
+    try {
+      const updated = ArticleModel.update(req.body.id, {
+        title: req.body.title,
+        excerpt: req.body.excerpt,
+        content: req.body.content,
+        published: req.body.published,
+        tags: req.body.tags ?? [],
+      });
+      console.log('Article updated: ', updated);
+      req.session.successMessage = 'Article updated successfully!';
+      return req.session.save((err) => {
+        if (err) {
+          console.error('❌ Erro ao guardar sessão:', err);
+          return res.status(500).render('articles-form.ejs', {
+            isAuthenticated,
+            user,
+            errorMessage: 'Erro ao guardar sessão',
+            article: {
+              id: req.body.id,
+              title: req.body.title,
+              excerpt: req.body.excerpt,
+              content: req.body.content,
+              published: req.body.published,
+            },
+          });
+        }
+
+        return res.redirect('/view-article/' + req.body.id);
+      });
+    } catch (e) {
+      return res.status(400).render('articles-form.ejs', {
+        isAuthenticated,
+        user,
+        errorMessage: e.message,
+        article: {
+          id: req.body.id,
+          title: req.body.title,
+          excerpt: req.body.excerpt,
+          content: req.body.content,
+          published: req.body.published,
+        },
+      });
+    }
+  }
+
   try {
     const created = ArticleModel.create({
       title: req.body.title,
@@ -164,7 +211,7 @@ app.post('/articles-form', (req, res) => {
       content: req.body.content,
       published: req.body.published,
 
-      // garante que userID/author pertencem sempre ao utilizador logado
+      // garante que userID/author pertencem sempre ao utilizador realiza login (não confies em dados do cliente)
       userID: req.session.userId,
       author: req.session.username,
 
@@ -177,8 +224,19 @@ app.post('/articles-form', (req, res) => {
     // Flash message via session (locals do not survive redirects)
     req.session.successMessage = 'Article created successfully!';
 
-    // redirect back to the form page so the flash message shows correctly
-    return res.redirect('/articles-form');
+    return req.session.save((err) => {
+      if (err) {
+        console.error('❌ Erro ao guardar sessão:', err);
+        return res.status(500).render('articles-form.ejs', {
+          isAuthenticated,
+          user,
+          errorMessage: 'Erro ao guardar sessão',
+        });
+      }
+
+      // redirect to an authenticated page to keep the user in session flow
+      return res.redirect('/my-articles');
+    });
   } catch (e) {
     // classic HTML form submit: re-render the form (not login) with error
     return res.status(400).render('articles-form.ejs', {
@@ -189,6 +247,41 @@ app.post('/articles-form', (req, res) => {
   }
 });
 
+// PUT - Update article
+app.put('/articles-form', (req, res) => {
+  const { isAuthenticated, user } = getAuthContext(req);
+  console.log('PUT /articles-form called with body:', req.body);
+  console.log('Session userId:', user ? user.id : 'not logged in');
+
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  try {
+    const articleId = req.body.id;
+    if (!articleId) {
+      return res.status(400).json({ message: 'Article ID required' });
+    }
+    const updated = ArticleModel.update(articleId, {
+      title: req.body.title,
+      excerpt: req.body.excerpt,
+      content: req.body.content,
+      published: req.body.published,
+    });
+    console.log('Article updated: ', updated);
+    req.session.successMessage = 'Article updated successfully!';
+    return req.session.save((err) => {
+      if (err) {
+        console.error('❌ Erro ao guardar sessão:', err);
+        return res.status(500).json({ message: 'Erro ao guardar sessão' });
+      }
+
+      return res.redirect('/view-article/' + articleId);
+    });
+  } catch (e) {
+    return res.status(400).json({ message: e.message });
+  }
+});
+
 // -------------------------
 // Articles API (JSON file)
 // Uses: public/js/articles-manager.js -> data/articles.json
@@ -196,7 +289,7 @@ app.post('/articles-form', (req, res) => {
 
 // GET - listar artigos
 app.get('/articles-api', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
+  const { isAuthenticated } = getAuthContext(req);
   if (!isAuthenticated) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -208,7 +301,7 @@ app.get('/articles-api', (req, res) => {
 
 // GET - artigo por id
 app.get('/articles-api/:id', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
+  const { isAuthenticated } = getAuthContext(req);
   if (!isAuthenticated) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -221,7 +314,7 @@ app.get('/articles-api/:id', (req, res) => {
 
 // PUT - atualizar artigo
 app.put('/articles-api/:id', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
+  const { isAuthenticated } = getAuthContext(req);
   if (!isAuthenticated) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
@@ -231,6 +324,52 @@ app.put('/articles-api/:id', (req, res) => {
   if (!updated) return res.status(404).json({ message: 'Article not found' });
 
   res.json(updated);
+});
+
+// DELETE - remover artigo
+app.delete('/view-article/:id', (req, res) => {
+  const { isAuthenticated } = getAuthContext(req);
+  if (!isAuthenticated) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  const ok = ArticleModel.remove(req.params.id);
+  if (!ok) return res.status(404).json({ message: 'Article not found' });
+
+  req.session.successMessage = 'Article deleted successfully!';
+  return req.session.save((err) => {
+    if (err) {
+      console.error('❌ Erro ao guardar sessão:', err);
+      return res.status(500).json({ message: 'Erro ao guardar sessão' });
+    }
+
+    return res.redirect('/my-articles');
+  });
+});
+
+// POST - remover artigo via form (HTML forms cannot send DELETE)
+app.post('/view-article/:id/delete', (req, res) => {
+  const { isAuthenticated } = getAuthContext(req);
+  if (!isAuthenticated) {
+    // if request comes from browser form, redirect to login
+    return res.redirect('/login');
+  }
+
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).send('Invalid article id');
+
+  const ok = ArticleModel.remove(id);
+  if (!ok) return res.status(404).send('Article not found');
+
+  req.session.successMessage = 'Article deleted successfully!';
+  return req.session.save((err) => {
+    if (err) {
+      console.error('❌ Erro ao guardar sessão:', err);
+      return res.status(500).send('Erro ao guardar sessão');
+    }
+
+    return res.redirect('/my-articles');
+  });
 });
 
 // POST - Login de utilizador
@@ -428,19 +567,6 @@ app.get('/logout', (req, res) => {
 
 //experimental routes for testing the UsersManager class
 
-// DELETE - remover artigo
-app.delete('/articles-api/:id', (req, res) => {
-  const isAuthenticated = req.session.userId ? true : false;
-  if (!isAuthenticated) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-
-  const ok = ArticleModel.remove(req.params.id);
-  if (!ok) return res.status(404).json({ message: 'Article not found' });
-
-  res.json({ success: true });
-});
-
 // DEBUG - Testar busca por email
 app.get('/debug/user/:email', (req, res) => {
   const user = UserManager.getByEmail(req.params.email);
@@ -465,7 +591,7 @@ app.put('/users/:id', (req, res) => {
 app.delete('/users/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
-    return res.status(400).json({ message: 'ID inv�lido' });
+    return res.status(400).json({ message: 'ID inválido' });
   }
   UserManager.remove(parseInt(req.params.id));
   res.json({ message: 'Utilizador eliminado' });
@@ -475,7 +601,7 @@ app.delete('/users/:id', (req, res) => {
 app.get('/users/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
-    return res.status(400).json({ message: 'ID inv�lido' });
+    return res.status(400).json({ message: 'ID inválido' });
   }
   const user = UserManager.getById(parseInt(req.params.id));
   if (user) {

@@ -14,7 +14,7 @@
 <div class="container">
 
   <div class="d-flex justify-content-center align-items-center">
-    <h3>Add your article</h3>
+    <h3><%= article ? 'Edit your article' : 'Add your article' %></h3>
   </div>
 
 <div
@@ -54,7 +54,7 @@ id="message-container-created-article"
       <label class="form-label" for="title">Title</label>
       <input
         id="title"
-        name="title"
+        name="title" value="<%= article ? article.title : '' %>"
         type="text"
         class="form-control"
         placeholder="Write an article title"
@@ -70,14 +70,15 @@ id="message-container-created-article"
         class="form-control"
         rows="2"
         placeholder="Short summary"
-      ></textarea>
+      ><%= article ? article.excerpt : '' %></textarea></textarea>
     </div>
 
     <div class="mb-3 me-4 ms-4 d-flex align-items-center gap-3">
       <label class="mb-0" for="published">Publish now</label>
-      <input id="published" name="published" type="checkbox" value="true" checked />
+      <input id="published" name="published" type="checkbox" value="true" <%= article && article.published ? 'checked' : '' %> />
     </div>
 
+    <input id="articleId" name="id" type="hidden" value="<%= article ? article.id : '' %>" />
     <input id="content" name="content" type="hidden" />
     <input id="tags" name="tags" type="hidden" value="[]" />
 
@@ -132,8 +133,6 @@ id="message-container-created-article"
     class="editorText mb-5 me-4 ms-4"
     >
     </div>
-  
- 
 </div>
 
 
@@ -171,16 +170,15 @@ id="message-container-created-article"
   });
 
   const quill = new Quill('#editor', {
-
-    modules: {
-      syntax: true,
-      toolbar: '#toolbar-container',
-    },
-    placeholder: 'Compose an epic text...',
     theme: 'snow',
+    modules: { toolbar: '#toolbar-container' },
+    placeholder: 'Compose an epic text...'
   });
 
-  // AQUI garantimos que o conteúdo do Quill vai para o input hidden quando clicar Save
+  // Load existing article content if editing
+  quill.root.innerHTML = `<%- article ? article.content : "" %>`;
+
+  // AQUI garantimos que o conte�do do Quill vai para o input hidden quando clicar Save
   const form = document.getElementById('article-form');
   const contentInput = document.getElementById('content');
 
@@ -195,7 +193,7 @@ id="message-container-created-article"
     const win = window.open('', '_blank');
     if (!win) return;
 
-     //TODO: Add alert message of creating article
+    //TODO: Add alert message of creating article
     win.document.write(`
       <html>
         <head>
@@ -214,4 +212,5 @@ id="message-container-created-article"
   });
 
 </script>
+
 
