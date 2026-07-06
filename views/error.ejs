@@ -1,0 +1,16 @@
+<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
+
+<div class="container py-4">
+  <h1 class="mb-3">Error</h1>
+  <% if (typeof message !== 'undefined' && message) { %>
+  <div class="alert alert-danger" role="alert"><%= message %></div>
+  <% } else { %>
+  <div class="alert alert-danger" role="alert">Something went wrong.</div>
+  <% } %>
+
+  <a class="btn btn-primary" href="/">Back to home</a>
+</div>
+
+<%- include('partials/footer.ejs') %>

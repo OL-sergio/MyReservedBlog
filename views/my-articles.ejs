@@ -1,9 +1,42 @@
-<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
-<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
-%> <%- include('partials/navigation.ejs') %> <% } %>
+<% const updateMessage = typeof successMessage !== 'undefined' ? successMessage
+: null; %> <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated &&
+user) { %> <%- include('partials/nav-registered-user.ejs', { user: user }) %> <%
+} else { %> <% } %>
 
 <div class="container py-4">
-  <h1 class="mb-3">Your Articles</h1>
+  <div
+    id="success-message-updated-article"
+    class="container mt-3"
+    style="display: none"
+  >
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success!</strong> Article updated successfully.
+      <button
+        type="button"
+        class="btn-close close-message-updated-article"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+
+  <div
+    id="success-message-deleted-article"
+    class="container mt-3"
+    style="display: none"
+  >
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>Success!</strong> Article deleted successfully.
+      <button
+        type="button"
+        class="btn-close close-message-deleted-article"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+
+  <h1 class="mb-3 pb-3">Your Articles</h1>
 
   <% const myArticles = Array.isArray(articles) ? articles : []; %> <% if
   (myArticles.length > 0) { %>
@@ -51,3 +84,63 @@
 </div>
 
 <%- include('partials/footer.ejs') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('deleteArticleSuccess')) {
+      // Mostrar o alerta de sucesso
+      const successContainer = document.getElementById(
+        'success-message-deleted-article'
+      );
+      if (!successContainer) return;
+
+      successContainer.style.display = 'block';
+
+      // Remover a mensagem automaticamente após 5 segundos
+      setTimeout(() => {
+        sessionStorage.removeItem('deleteArticleSuccess');
+        successContainer.style.display = 'none';
+      }, 5000);
+
+      // Adicionar evento de clique ao botão de fechar
+      const closeButton = successContainer.querySelector(
+        '.close-message-deleted-article'
+      );
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          sessionStorage.removeItem('deleteArticleSuccess');
+          successContainer.style.display = 'none';
+        });
+      }
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem('updateArticleSuccess')) {
+      // Mostrar o alerta de sucesso
+      const successContainer = document.getElementById(
+        'success-message-updated-article'
+      );
+      if (!successContainer) return;
+
+      successContainer.style.display = 'block';
+
+      // Remover a mensagem automaticamente após 5 segundos
+      setTimeout(() => {
+        sessionStorage.removeItem('updateArticleSuccess');
+        successContainer.style.display = 'none';
+      }, 5000);
+
+      // Adicionar evento de clique ao botão de fechar
+      const closeButton = successContainer.querySelector(
+        '.close-message-updated-article'
+      );
+      if (closeButton) {
+        closeButton.addEventListener('click', () => {
+          sessionStorage.removeItem('updateArticleSuccess');
+          successContainer.style.display = 'none';
+        });
+      }
+    }
+  });
+</script>

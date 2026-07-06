@@ -24,14 +24,16 @@
       <a class="btn btn-secondary" href="/my-articles" role="button">Back</a>
       <a
         class="btn btn-primary"
+        id="update-article-form"
         href="/articles-form?edit=<%= article.id %>"
         role="button"
         >Edit</a
       >
       <form
         action="/view-article/<%= article.id %>/delete"
+        id="delete-article-form"
         method="post"
-        onsubmit="return confirm('Delete this article?')"
+        onsubmit="return confirm('Delete this article?');"
       >
         <button class="btn btn-danger" type="submit">Delete</button>
       </form>
@@ -44,3 +46,15 @@
 </div>
 
 <%- include('partials/footer.ejs') %>
+
+<script>
+  // Quando o formulário de registo for submetido com sucesso
+  const formDelete = document.querySelector('#delete-article-form');
+  if (formDelete) {
+    formDelete.addEventListener('submit', (e) => {
+      // Marcar no sessionStorage que um utilizador foi criado com sucesso
+      // Isso será verificado na página index.ejs
+      sessionStorage.setItem('deleteArticleSuccess', 'true');
+    });
+  }
+</script>

@@ -1,0 +1,9 @@
+<% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
+
+<div>
+  <h1>Preferences Page</h1>
+</div>
+
+<%- include('partials/footer.ejs') %>

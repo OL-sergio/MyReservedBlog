@@ -37,7 +37,7 @@
   </div>
 </div>
 
-<!-- Hero section -->
+<!-- Top Hero section -->
 <div class="container background-container">
   <div class="row flex-row-reverse align-items-center g-5 py-5">
     <div class="col-10 col-sm-8 col-lg-6">
@@ -51,7 +51,7 @@
       <h1
         class="display-5 fw-bold align-items-center text-start lh-1 mx-5 px-4 mb-4"
       >
-        How to be a better developer in 2026
+        <%= latestArticle?.title ?? 'How to be a better developer in 2026' %>
       </h1>
       <div class="card-body mb-3 text-start mx-5 px-4">
         <p
@@ -59,33 +59,36 @@
           id="card-hero-text"
           data-toggle="readmore"
         >
-          In 2026, being a better developer involves continuous learning,
-          embracing new technologies, and honing problem-solving skills. Stay
-          updated with industry trends, collaborate with peers, and focus on
-          writing clean, efficient code. Additionally, prioritize soft skills
-          like communication and adaptability to thrive in the ever-evolving
-          tech landscape.
+          <%= latestArticle?.excerpt
+            ?? 'In 2026, being a better developer involves continuous learning, embracing new technologies, and honing problem-solving skills. Stay updated with industry trends, collaborate with peers, and focus on writing clean, efficient code. Additionally, prioritize soft skills like communication and adaptability to thrive in the ever-evolving tech landscape.' %>
         </p>
         <div
           class="d-flex flex-row-reverse justify-content-between align-items-center pt-5 mt-4"
         >
-          <button
-            type="button"
+          <a
             class="read-more-btn text-decoration-none text-black fw-bolder"
             id="card-hero-btn"
-            data-target="card-hero-text"
+            href="/view-article/<%= latestArticle?.id ?? '' %>"
           >
             Read more
-          </button>
+          </a>
 
-          <h6 class="text-body-secondary">2025 nov 12</h6>
+          <h6 class="text-body-secondary">
+            <%= latestArticle?.createdAt
+              ? new Date(latestArticle.createdAt).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: '2-digit',
+                })
+              : '2025 nov 12' %>
+          </h6>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Hero section -->
+<!--Featured Hero section -->
 <div class="divider"></div>
 
 <div class="container-xxl">
@@ -93,28 +96,32 @@
     class="row g-0 border rounded-3 overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative mx-5"
   >
     <div class="col p-4 d-flex flex-column position-static m-4 p-1">
-      <h3 class="mb-0 fw-bold mb-4">Featured post</h3>
+      <h3 class="mb-0 fw-bold mb-4"><%= featuredArticle?.title ?? 'Featured post ' %> </h3>
       <p
         class="text-body-secondary mb-auto paragraph-truncate"
         id="featured-post-text"
         data-toggle="readmore"
       >
-        This is a wider card with supporting text below as a natural lead-in to
-        additional content.This is a wider card with supporting text below as a
-        natural lead-in to additional content.This is a wider card with
-        supporting text below as a natural lead-in to additional content.
+         <%= featuredArticle?.excerpt
+            ?? ' This is a wider card with supporting text below as a natural lead-in to additional content.This is a wider card with supporting text below as a natural lead-in to additional content.This is a wider card with supporting text below as a natural lead-in to additional content.' %>
       </p>
       <div class="row my-4">
-        <div class="col-md-8 text-body-secondary">Nov 12</div>
+        <div class="col-md-8 text-body-secondary"><%= featuredArticle?.createdAt
+              ? new Date(featuredArticle.createdAt).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: '2-digit',
+                })
+              : '2025 nov 12' %></div>
         <div class="col-sm text-end me-3">
-          <button
-            type="button"
-            class="read-more-btn text-decoration-none text-black fw-bolder"
-            id="featured-post-btn"
-            data-target="featured-post-text"
-          >
-            Read more
-          </button>
+          <a
+                class="read-more-btn text-decoration-none text-black fw-bolder"
+                id="featured-post-btn"
+                data-target="featured-post-text"
+                href="/view-article/<%= featuredArticle?.id ?? '' %>"
+              >
+                Read more
+              </a>
         </div>
       </div>
     </div>
@@ -131,249 +138,193 @@
 </div>
 
 <div class="divider"></div>
-<!-- Cards section -->
+<!-- Cards section (3 articles from DB) -->
 <div class="container-xxl">
   <div class="d-flex row-cols-0 row-cols-sm-2 row-cols-md-3 g-3 mx-5">
-    <div class="flex-fill">
-      <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
-        <img
-          src="/images/image_3_coding.jpg"
-          class="d-block mx-lg-auto img-fluid hero-image"
-          loading="lazy"
-        />
-        <div class="card-body">
-          <h4 class="card-title fw-bold text-start my-3">Card title</h4>
-          <p
-            class="card-text paragraph-truncate"
-            id="card-text-1"
-            data-toggle="readmore"
-          >
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
-          </p>
-          <div
-            class="d-flex flex-row-reverse justify-content-between align-items-center"
-          >
-            <div class="text-group">
-              <button
-                type="button"
-                class="read-more-btn text-decoration-none text-black fw-bolder"
-                id="card-btn-1"
-                data-target="card-text-1"
-              >
-                Read more
-              </button>
-            </div>
-            <small class="text-body-secondary">9 mins</small>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flex-fill mx-4">
-      <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
-        <img
-          src="/images/image_4_coding.jpg"
-          class="d-block mx-lg-auto img-fluid hero-image"
-          loading="lazy"
-        />
-        <div class="card-body">
-          <h4 class="card-title fw-bold text-start my-3">Card title</h4>
-          <p
-            class="card-text text-body-secondary paragraph-truncate"
-            id="card-text-2"
-            data-toggle="readmore"
-          >
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
-          </p>
-          <div
-            class="d-flex flex-row-reverse justify-content-between align-items-center"
-          >
-            <div class="text-group">
-              <button
-                type="button"
-                class="read-more-btn text-decoration-none text-black fw-bolder"
-                id="card-btn-2"
-                data-target="card-text-2"
-              >
-                Read more
-              </button>
-            </div>
-            <small class="text-body-secondary">9 mins</small>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flex-fill p-0">
-      <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
-        <img
-          src="/images/image_5_coding.jpg"
-          class="d-block mx-lg-auto img-fluid hero-image"
-          loading="lazy"
-        />
-        <div class="card-body">
-          <h4 class="card-title fw-bold text-start my-3">Card title</h4>
-          <p
-            class="card-text text-body-secondary paragraph-truncate"
-            id="card-text-3"
-            data-toggle="readmore"
-          >
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
-          </p>
-          <div
-            class="d-flex flex-row-reverse justify-content-between align-items-center"
-          >
-            <div class="text-group">
-              <button
-                type="button"
-                class="read-more-btn text-decoration-none text-black fw-bolder"
-                id="card-btn-3"
-                data-target="card-text-3"
-              >
-                Read more
-              </button>
-            </div>
-            <small class="text-body-secondary">9 mins</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="container-xxl">
-  <div
-    class="row p-0 pb-0 pe-lg-0 pt-lg-0 align-items-center rounded-3 mx-5"
-    style="background-color: rgba(234, 247, 254, 0.66)"
-  >
-    <div class="col-lg-6 p-lg-6 pt-lg-3">
-      <h1 class="display-5 fw-bold lh-1 text-start text-body-emphasis ms-5">
-        Border hero with cropped
-      </h1>
-      <p
-        class="lead mt-5 mx-5 paragraph-truncate"
-        id="card-text-4"
-        data-toggle="readmore"
-      >
-        Quickly design and customize responsive mobile-first sites with
-        Bootstrap, the world's most popular front-end open source toolkit,
-        featuring Sass variables and mixins, responsive grid system, extensive
-        prebuilt components, and powerful JavaScript plugins.
-      </p>
-      <div
-        class="d-flex flex-row-reverse justify-content-end align-items-center mt-5 ms-5 pe-0"
-      >
-        <div class="text-group">
-          <div class="d-flex flex-grow-1">
-            <button
-              type="button"
-              class="read-more-btn text-decoration-none text-black fw-bolder"
-              id="card-btn-4"
-              data-target="card-text-4"
+    <% (nextArticles || []).slice(0, 3).forEach((a, idx) => { %>
+      <div class="flex-fill <%= idx === 1 ? 'mx-4' : '' %> <%= idx === 2 ? 'p-0' : '' %>">
+        <div class="card border-0 rounded-0 shadow-sm" style="width: 100%">
+          <img
+            src="/images/<%= idx === 0 ? 'image_3_coding.jpg' : idx === 1 ? 'image_4_coding.jpg' : 'image_5_coding.jpg' %>"
+            class="d-block mx-lg-auto img-fluid hero-image"
+            loading="lazy"
+          />
+          <div class="card-body">
+            <h4 class="card-title fw-bold text-start my-3"><%= a.title %></h4>
+            <p
+              class="card-text text-body-secondary paragraph-truncate"
+              id="card-text-<%= a.id %>"
+              data-toggle="readmore"
             >
-              <h5>Read more</h5>
-            </button>
+              <%= a.excerpt || '' %>
+            </p>
+            <div class="d-flex flex-row-reverse justify-content-between align-items-center">
+              <div class="text-group">
+                <a
+                  class="read-more-btn text-decoration-none text-black fw-bolder"
+                  id="card-btn-<%= a.id %>"
+                  data-target="card-text-<%= a.id %>"
+                  href="/view-article/<%= a.id %>"
+                >
+                  Read more
+                </a>
+              </div>
+              <small class="text-body-secondary">
+                <%= a.createdAt
+                  ? new Date(a.createdAt).toLocaleDateString('en-GB', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: '2-digit',
+                    })
+                  : '' %>
+              </small>
+            </div>
           </div>
         </div>
-        <div class="d-flex flex-grow-1" id="border-hero-date">
-          <h5 class="text-body-secondary">2026 march 12</h5>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+  <div class="divider"></div>
+
+  <div class="container-xxl">
+    <div
+      class="row p-0 pb-0 pe-lg-0 pt-lg-0 align-items-center rounded-3 mx-5"
+      style="background-color: rgba(234, 247, 254, 0.66)"
+    >
+      <div class="col-lg-6 p-lg-6 pt-lg-3">
+        <h1 class="display-5 fw-bold lh-1 text-start text-body-emphasis ms-5">
+          <%= featuredArticle?.title ?? 'Border hero with cropped' %> </h3>
+        </h1>
+        <p
+          class="lead mt-5 mx-5 paragraph-truncate"
+          id="card-text-4"
+          data-toggle="readmore"
+        ><%= featuredArticle?.excerpt
+            ?? 'Quickly design and customize responsive mobile-first sites with Bootstrap, the worlds most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.' %>
+
+        </p>
+        <div
+          class="d-flex flex-row-reverse justify-content-end align-items-center mt-5 ms-5 pe-0"
+        >
+          <div class="text-group">
+            <div class="d-flex flex-grow-1">
+              <button
+                type="button"
+                class="read-more-btn text-decoration-none text-black fw-bolder"
+                id="card-btn-4"
+                data-target="card-text-4"
+              >
+                <h5>Read more</h5>
+              </button>
+            </div>
+          </div>
+          <div class="d-flex flex-grow-1" id="border-hero-date">
+            <h5 class="text-body-secondary">
+              <%= featuredArticle?.createdAt
+              ? new Date(featuredArticle.createdAt).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: '2-digit',
+                })
+              : '2025 nov 12' %></h5>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-lg-5 offset-lg-1 rounded overflow-hidden">
-      <img
-        class="d-inline-block mx-lg-auto"
-        src="/images/image_2_coding.jpg"
-        alt=""
-        width="1000"
-        height="540"
-        loading="lazy"
-      />
+      <div class="col-lg-5 offset-lg-1 rounded overflow-hidden">
+        <img
+          class="d-inline-block mx-lg-auto"
+          src="/images/image_2_coding.jpg"
+          alt=""
+          width="1000"
+          height="540"
+          loading="lazy"
+        />
+      </div>
     </div>
   </div>
-</div>
 
-<div class="divider"></div>
-<div class="container-xxl">
-  <div
-    class="d-flex d-inline-block align-items-center justify-content-end mt-4 mb-5 mx-5"
-  >
-    <button
-      class="btn btn-primary align-items-center justify-content-end"
-      id="change-bg-color-btn"
-      style="width: 150px; height: 50px; font-weight: bold"
-      href="#"
+  <div class="divider"></div>
+
+  <div class="container-xxl">
+    <div
+      class="d-flex d-inline-block align-items-center justify-content-end mt-4 mb-5 mx-5"
     >
-      See more <i class="bi bi-arrow-down-circle-fill ms-2"></i>
-    </button>
+      <a
+        class="btn btn-primary align-items-center justify-content-end"
+        id="change-bg-color-btn"
+        style="width: 150px; height: 50px; font-weight: bold"
+        href="/articles"
+      >
+        See more <i class="bi bi-arrow-down-circle-fill ms-2"></i>
+      </a>
+    </div>
   </div>
-</div>
 
-<div class="divider"></div>
+  <div class="divider"></div>
 
-<%- include('partials/footer.ejs') %>
+  <%- include('partials/footer.ejs') %>
 
-<!-- Script para mostrar mensagem de sucesso quando utilizador é criado -->
-<script>
-  // Verificar se há uma mensagem de sucesso no sessionStorage
-  document.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('userCreatedSuccess')) {
-      // Mostrar o alerta de sucesso
-      const successContainer = document.getElementById(
-        'success-message-created-user'
-      );
-      if (!successContainer) return;
+  <!-- Script para mostrar mensagem de sucesso quando utilizador é criado -->
+  <script>
+    // Verificar se há uma mensagem de sucesso no sessionStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('userCreatedSuccess')) {
+        // Mostrar o alerta de sucesso
+        const successContainer = document.getElementById(
+          'success-message-created-user'
+        );
+        if (!successContainer) return;
 
-      successContainer.style.display = 'block';
+        successContainer.style.display = 'block';
 
-      // Remover a mensagem automaticamente após 5 segundos
-      setTimeout(() => {
-        sessionStorage.removeItem('userCreatedSuccess');
-        successContainer.style.display = 'none';
-      }, 5000);
-
-      // Adicionar evento de clique ao botão de fechar
-      const closeButton = successContainer.querySelector(
-        '.close-message-register-user'
-      );
-      if (closeButton) {
-        closeButton.addEventListener('click', () => {
+        // Remover a mensagem automaticamente após 5 segundos
+        setTimeout(() => {
           sessionStorage.removeItem('userCreatedSuccess');
           successContainer.style.display = 'none';
-        });
+        }, 5000);
+
+        // Adicionar evento de clique ao botão de fechar
+        const closeButton = successContainer.querySelector(
+          '.close-message-register-user'
+        );
+        if (closeButton) {
+          closeButton.addEventListener('click', () => {
+            sessionStorage.removeItem('userCreatedSuccess');
+            successContainer.style.display = 'none';
+          });
+        }
       }
-    }
-  });
+    });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('userLoginSuccess')) {
-      // Mostrar o alerta de sucesso
-      const successContainer = document.getElementById(
-        'success-message-login-user'
-      );
-      if (!successContainer) return;
+    document.addEventListener('DOMContentLoaded', () => {
+      if (sessionStorage.getItem('userLoginSuccess')) {
+        // Mostrar o alerta de sucesso
+        const successContainer = document.getElementById(
+          'success-message-login-user'
+        );
+        if (!successContainer) return;
 
-      successContainer.style.display = 'block';
+        successContainer.style.display = 'block';
 
-      // Remover a mensagem automaticamente após 5 segundos
-      setTimeout(() => {
-        sessionStorage.removeItem('userLoginSuccess');
-        successContainer.style.display = 'none';
-      }, 5000);
-
-      // Adicionar evento de clique ao botão de fechar
-      const closeButton = successContainer.querySelector(
-        '.close-message-login-user'
-      );
-      if (closeButton) {
-        closeButton.addEventListener('click', () => {
+        // Remover a mensagem automaticamente após 5 segundos
+        setTimeout(() => {
           sessionStorage.removeItem('userLoginSuccess');
           successContainer.style.display = 'none';
-        });
+        }, 5000);
+
+        // Adicionar evento de clique ao botão de fechar
+        const closeButton = successContainer.querySelector(
+          '.close-message-login-user'
+        );
+        if (closeButton) {
+          closeButton.addEventListener('click', () => {
+            sessionStorage.removeItem('userLoginSuccess');
+            successContainer.style.display = 'none';
+          });
+        }
       }
-    }
-  });
-</script>
+    });
+  </script>
+</div>
