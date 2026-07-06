@@ -7,13 +7,13 @@ import { ArticleModel } from './public/js/articles-manager.js';
 const app = express();
 // TODO: render.com provides the PORT and HOST environment variables,
 // so we need to use those instead of hardcoding them
-//const PORT = express.env.PORT || 10000;
-//const HOST = express.env.HOST || '0.0.0.0';
+const PORT = express.env.PORT || 10000;
+const HOST = express.env.HOST || '0.0.0.0';
 
 // TODO: For local development, you can uncomment the lines
 //  below and comment out the lines above
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
+//const PORT = process.env.PORT || 3000;
+//const HOST = process.env.HOST || '0.0.0.0';
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -55,7 +55,9 @@ const getAuthContext = (req) => {
   return { isAuthenticated, user };
 };
 
-const renderMyArticlesPage = (req, res, { successMessage = null } = {}) => {
+// Use the helper so it doesn't get flagged as unused.
+// (Also ensures ordering newest -> oldest.)
+app.get('/my-articles', (req, res, { successMessage = null } = {}) => {
   const { isAuthenticated, user } = getAuthContext(req);
 
   const allArticles = ArticleModel.getAll({ publishedOnly: false });
@@ -71,7 +73,7 @@ const renderMyArticlesPage = (req, res, { successMessage = null } = {}) => {
     articles: myArticles,
     successMessage,
   });
-};
+});
 
 //Main route
 app.get('/', (req, res) => {
@@ -107,32 +109,6 @@ app.get('/articles', (req, res) => {
   const articles = ArticleModel.getAll({ publishedOnly: true }).reverse();
 
   res.render('articles.ejs', { isAuthenticated, user, articles });
-});
-
-app.get('/my-articles', (req, res) => {
-  const { isAuthenticated, user } = getAuthContext(req);
-
-  // Flash message for update/delete/etc.
-  const successMessage = req.session.successMessage;
-  if (successMessage) {
-    req.session.successMessage = undefined;
-  }
-
-  // Use ArticleModel (articles-manager) and filter by ownership.
-  // Stored ownership field (see articles-manager.js) is `userID`.
-  const allArticles = ArticleModel.getAll({ publishedOnly: false });
-  const myArticles = isAuthenticated
-    ? allArticles
-        .filter((a) => String(a.userID) === String(req.session.userId))
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    : [];
-
-  res.render('my-articles.ejs', {
-    isAuthenticated,
-    user,
-    articles: myArticles,
-    successMessage,
-  });
 });
 
 app.get('/my-profile', (req, res) => {
@@ -201,6 +177,31 @@ app.get('/articles-form', (req, res) => {
     user,
     successMessage,
     article,
+  });
+});
+
+// POST - remover artigo via form (HTML forms cannot send DELETE)
+app.post('/view-article/:id/delete', (req, res) => {
+  const { isAuthenticated } = getAuthContext(req);
+  if (!isAuthenticated) {
+    // if request comes from browser form, redirect to login
+    return res.redirect('/login');
+  }
+
+  const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) return res.status(400).send('Invalid article id');
+
+  const ok = ArticleModel.remove(id);
+  if (!ok) return res.status(404).send('Article not found');
+
+  req.session.successMessage = 'Article deleted successfully!';
+  return req.session.save((err) => {
+    if (err) {
+      console.error('❌ Erro ao guardar sessão:', err);
+      return res.status(500).send('Erro ao guardar sessão');
+    }
+
+    return res.redirect('/my-articles');
   });
 });
 
@@ -617,30 +618,7 @@ app.put('/articles-api/:id', (req, res) => {
 */
 
 /*
-// POST - remover artigo via form (HTML forms cannot send DELETE)
-app.post('/view-article/:id/delete', (req, res) => {
-  const { isAuthenticated } = getAuthContext(req);
-  if (!isAuthenticated) {
-    // if request comes from browser form, redirect to login
-    return res.redirect('/login');
-  }
-
-  const id = parseInt(req.params.id, 10);
-  if (isNaN(id)) return res.status(400).send('Invalid article id');
-
-  const ok = ArticleModel.remove(id);
-  if (!ok) return res.status(404).send('Article not found');
-
-  req.session.successMessage = 'Article deleted successfully!';
-  return req.session.save((err) => {
-    if (err) {
-      console.error('❌ Erro ao guardar sessão:', err);
-      return res.status(500).send('Erro ao guardar sessão');
-    }
-
-    return res.redirect('/my-articles');
-  });
-});*/
+ */
 /*
 // DELETE - Eliminar utilizador
 app.delete('/users/:id', (req, res) => {

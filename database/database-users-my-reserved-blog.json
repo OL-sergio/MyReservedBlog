@@ -80,5 +80,16 @@
     "isActive": true,
     "createdAt": "2026-06-29T17:27:19.617Z",
     "updatedAt": "2026-06-29T17:27:19.617Z"
+  },
+  {
+    "id": 9,
+    "username": "sergiotest2",
+    "email": "sergiotest2@email.com",
+    "password": ";DEP8kXB.Baq6$R",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-06T17:02:43.981Z",
+    "updatedAt": "2026-07-06T17:02:43.981Z"
   }
 ]

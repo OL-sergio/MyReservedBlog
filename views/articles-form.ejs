@@ -1,8 +1,6 @@
 <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated && user) { %>
-  <%- include('partials/nav-registered-user.ejs', { user: user }) %>
-<% } else { %>
-  <%- include('partials/navigation.ejs') %>
-<% } %>
+<%- include('partials/nav-registered-user.ejs', { user: user }) %> <% } else {
+%> <%- include('partials/navigation.ejs') %> <% } %>
 
 <!-- 
 //TODO: Add edit page and delete page for articles, and add the links to the articles page.
@@ -36,16 +34,13 @@
     </div>
   </div>
 
-  <form
-    id="article-form"
-    class="mt-3"
-    method="POST"
-    action="/articles-form"
-  >
+  <form id="article-form" class="mt-3" method="POST" action="/articles-form">
     <header class="d-flex justify-content-end py-3">
       <div class="btn-group me-4" role="group" aria-label="First group">
         <button class="btn btn-success" type="submit">Save article</button>
-        <button class="btn btn-primary" type="button" id="btn-preview">Preview</button>
+        <button class="btn btn-primary" type="button" id="btn-preview">
+          Preview
+        </button>
       </div>
     </header>
 
@@ -70,21 +65,23 @@
         class="form-control"
         rows="2"
         placeholder="Short summary"
-      ><%= article ? article.excerpt : '' %></textarea>
+      >
+    <%= article ? article.excerpt : '' %> </textarea>
+
     </div>
 
     <div class="mb-3 me-4 ms-4 d-flex align-items-center gap-3">
       <label class="mb-0" for="published">Publish now</label>
-      <input
-        id="published"
-        name="published"
-        type="checkbox"
-        value="true"
-        <%= article && article.published ? 'checked' : '' %>
-      />
+      <input id="published" name="published" type="checkbox" value="true" <%= article && article.published ? 'checked' : '' %> />
+    
     </div>
 
-    <input id="articleId" name="id" type="hidden" value="<%= article ? article.id : '' %>" />
+    <input
+      id="articleId"
+      name="id"
+      type="hidden"
+      value="<%= article ? article.id : '' %>"
+    />
     <input id="content" name="content" type="hidden" />
     <input id="tags" name="tags" type="hidden" value="[]" />
 
@@ -143,14 +140,18 @@
 <!-- Initialize Quill editor -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const successContainer = document.getElementById('message-container-created-article');
+    const successContainer = document.getElementById(
+      'message-container-created-article'
+    );
     if (successContainer && successContainer.dataset.show === 'true') {
       successContainer.style.display = 'block';
       const timer = window.setTimeout(() => {
         successContainer.style.display = 'none';
       }, 5000);
 
-      const closeButton = successContainer.querySelector('.close-message-created-article');
+      const closeButton = successContainer.querySelector(
+        '.close-message-created-article'
+      );
       closeButton?.addEventListener('click', () => {
         window.clearTimeout(timer);
         successContainer.style.display = 'none';
@@ -195,4 +196,3 @@
     win.document.close();
   });
 </script>
-
