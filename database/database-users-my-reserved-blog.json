@@ -3,93 +3,66 @@
     "id": 1,
     "username": "sergio",
     "email": "sergio@email.com",
-    "password": "7!x9e_F1jvu_Z3#_",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-05-11T17:25:45.665Z",
-    "updatedAt": "2026-05-11T17:25:45.665Z"
-  },
-  {
-    "id": 2,
-    "username": "joao",
-    "email": "joao@email.com",
-    "password": "K?K]w@hef~(,X%9",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-05-11T17:34:11.834Z",
-    "updatedAt": "2026-05-11T17:34:11.834Z"
-  },
-  {
-    "id": 3,
-    "username": "filipe",
-    "email": "filipe@email.com",
-    "password": "s[MWw;oC%Z6M9rva",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-05-11T17:37:34.139Z",
-    "updatedAt": "2026-05-11T17:37:34.139Z"
-  },
-  {
-    "id": 4,
-    "username": "carlos",
-    "email": "carlso@email.com",
-    "password": "QX9#5CzkN5~kxq2p",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-05-11T17:39:16.162Z",
-    "updatedAt": "2026-05-11T17:39:16.162Z"
-  },
-  {
-    "id": 5,
-    "username": "ana",
-    "email": "ana@email.com",
-    "password": "_w8bFYKt[?U*#7>",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-05-11T17:42:02.461Z",
-    "updatedAt": "2026-05-11T17:42:02.461Z"
-  },
-  {
-    "id": 6,
-    "username": "sergioteste4",
-    "email": "sergioteste4@live.com",
-    "password": "F^.~7i^'^ky#W~P8",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-29T00:00:00.000Z",
-    "updatedAt": "2026-06-29T00:00:00.000Z"
-  },
-  {
-    "id": 7,
-    "username": "sergioteste7",
-    "email": "sergioteste7@live.com",
-    "password": "hRjh#7fj*2=E}cd",
-    "fullName": "",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-29T16:45:35.509Z",
-    "updatedAt": "2026-06-29T16:45:35.509Z"
-  },
-  {
-    "id": 8,
-    "username": "sergiotest1",
-    "email": "sergiotest1@email.com",
-    "password": "hRjh#7fj*2=E}cd",
-    "fullName": "",
-    "role": "user",
-    "isActive": true,
-    "createdAt": "2026-06-29T17:27:19.617Z",
-    "updatedAt": "2026-06-29T17:27:19.617Z"
-  },
-  {
-    "id": 9,
-    "username": "sergiotest2",
-    "email": "sergiotest2@email.com",
     "password": ";DEP8kXB.Baq6$R",
     "fullName": "",
     "role": "user",
     "isActive": true,
-    "createdAt": "2026-07-06T17:02:43.981Z",
-    "updatedAt": "2026-07-06T17:02:43.981Z"
+    "createdAt": "2026-07-07T12:31:21.600Z",
+    "updatedAt": "2026-07-07T12:31:21.600Z"
+  },
+  {
+    "id": 2,
+    "username": "tmpenc",
+    "email": "tmpenc@example.com",
+    "password": "secret123",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-07T12:32:10.153Z",
+    "updatedAt": "2026-07-07T12:32:10.154Z"
+  },
+  {
+    "id": 3,
+    "username": "tmpenc2",
+    "email": "tmpenc2@example.com",
+    "password": "u55OBVmccDIJPF74ctbApQ==:nA0K6DZBSCzpio26:GwNiK2D0t2fyorHEj393eA==:clO3hLV5xceB",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-07T12:40:19.678Z",
+    "updatedAt": "2026-07-07T12:40:19.679Z"
+  },
+  {
+    "id": 4,
+    "username": "joao",
+    "email": "J+04GjaNl7NFNWAbpfbLHQ==:dPBBkdW5/EKb+2bW:LLabEphFPwLBdWMPTliFyw==:/eCqpQ86mKmzyz2c87Q=",
+    "password": "eki7kDQg9+XGySFQkQbTNA==:gDdX4Tv+n97Dqiof:6B3pnsqv0lQlZHuS4K4ftw==:BwKaIe+QAMg7TXcyGmet",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-07T13:14:17.281Z",
+    "updatedAt": "2026-07-07T13:14:17.281Z"
+  },
+  {
+    "id": 5,
+    "username": "ana",
+    "email": "lr6SCYkJ8Tdpq9TU8SMoUg==:n9WkRaJ1JPCp6Hjc:ir7s9FZ/40B9JHjH7oYMpg==:Jz+YoH6IlCvODvnlTQ==",
+    "password": "sDkja6ioS10cnr4pMknAGw==:IWpbDHt/tv9+kWkW:IEhmylAkbPYqze0f4RrPqQ==:Gsrpr2dx+PIoZ0Ar3M47jGU+",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-07T13:14:51.838Z",
+    "updatedAt": "2026-07-07T13:14:51.838Z"
+  },
+  {
+    "id": 6,
+    "username": "sergioteste4",
+    "email": "9rmUYkHgrZCOu9cyTaCM3A==:AWjkpMmXxz8byQ6c:HntVOfLs0DsNtAPROeu6Lg==:nN1aolmA2N+BOQUkTcRrvZZI8M4C",
+    "password": "35ubRdI0W3CTt5dOWNARnA==:yDiu+XvSqTtJxOpB:Pi50+SOuD8PB3L12Yold8g==:V/fQP55YtiiqnaUyQb0ZoQ==",
+    "fullName": "",
+    "role": "user",
+    "isActive": true,
+    "createdAt": "2026-07-07T13:39:01.656Z",
+    "updatedAt": "2026-07-07T13:39:01.656Z"
   }
 ]

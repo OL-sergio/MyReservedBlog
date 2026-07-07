@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import User from '../../models/User.js';
+import { encryptString, decryptString } from './crypto-storage.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,27 +39,53 @@ function writeUsers(users) {
 
 export class UserManager {
   static getAll() {
-    return readUsers();
+    const users = readUsers();
+    return users.map((u) => ({
+      ...u,
+      password: decryptString(u.password),
+      email: decryptString(u.email),
+    }));
   }
 
   static getById(id) {
     const users = readUsers();
-    return users.find((u) => String(u.id) === String(id)) || null;
+    const found = users.find((u) => String(u.id) === String(id)) || null;
+    if (!found) return null;
+    return {
+      ...found,
+      password: decryptString(found.password),
+      email: decryptString(found.email),
+    };
   }
 
   static getByEmail(email) {
     const users = readUsers();
+
     const normalizedEmail = String(email ?? '')
       .trim()
       .toLowerCase();
-    return (
-      users.find(
-        (u) =>
-          String(u.email ?? '')
+
+    // IMPORTANT:
+    // - Some DB entries store email encrypted (contains ':')
+    // - Some entries are already plaintext
+    // We MUST decrypt each stored email before comparing.
+    const found =
+      users.find((u) => {
+        const decryptedEmail = decryptString(u.email);
+        return (
+          String(decryptedEmail ?? '')
             .trim()
             .toLowerCase() === normalizedEmail
-      ) || null
-    );
+        );
+      }) || null;
+
+    if (!found) return null;
+
+    return {
+      ...found,
+      email: decryptString(found.email),
+      password: decryptString(found.password),
+    };
   }
 
   static getByUsername(username) {
@@ -108,14 +135,25 @@ export class UserManager {
     user.role = user.role || 'user';
     // Preserve createdAt/updatedAt coming from the model/constructor
 
-    users.push(user.toJSON());
+    // Encrypt password at rest (AES-256-GCM)
+    const toSave = user.toJSON();
+    toSave.email = encryptString(toSave.email);
+    toSave.password = encryptString(toSave.password);
+
+    users.push(toSave);
     writeUsers(users);
 
-    return user.toJSON();
+    // Return decrypted view to callers
+    return {
+      ...toSave,
+      email: String(user.email ?? ''),
+      password: String(user.password ?? ''),
+    };
   }
 
   static update(id, updates) {
     const users = readUsers();
+
     const index = users.findIndex((u) => String(u.id) === String(id));
     if (index === -1) return null;
 
