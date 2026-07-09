@@ -41,13 +41,26 @@ function writeArticles(articles) {
 function decryptArticleForRuntime(article) {
   if (!article) return article;
 
-  return {
-    ...article,
-    // Encrypt-at-rest fields
-    title: decryptString(article.title),
-    content: decryptString(article.content),
-    excerpt: decryptString(article.excerpt),
-  };
+  // decryptString is resilient (won’t throw), but keep per-field context anyway.
+  try {
+    return {
+      ...article,
+      // Encrypt-at-rest fields
+      title: decryptString(article.title),
+      content: decryptString(article.content),
+      excerpt: decryptString(article.excerpt),
+    };
+  } catch (err) {
+    console.error(
+      '❌ decryptArticleForRuntime failed. Article id:',
+      article?.id,
+      {
+        errorName: err?.name,
+        errorMessage: err?.message,
+      }
+    );
+    return article;
+  }
 }
 
 function encryptArticleForStorage(article) {

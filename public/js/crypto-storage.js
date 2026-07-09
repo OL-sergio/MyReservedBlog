@@ -54,13 +54,14 @@ export function encryptString(plainText) {
 
 export function decryptString(enc) {
   if (enc === null || enc === undefined) return enc;
+
   const secret = getMasterSecret();
   if (!secret) return String(enc);
 
   const str = String(enc);
 
+  // Backwards compatibility for already-plaintext databases
   if (!str.includes(':')) {
-    // Backwards compatibility for already-plaintext databases
     return str;
   }
 
@@ -70,20 +71,36 @@ export function decryptString(enc) {
     return str;
   }
 
-  const salt = Buffer.from(saltB64, 'base64');
-  const iv = Buffer.from(ivB64, 'base64');
-  const tag = Buffer.from(tagB64, 'base64');
-  const ciphertext = Buffer.from(ctB64, 'base64');
+  try {
+    const salt = Buffer.from(saltB64, 'base64');
+    const iv = Buffer.from(ivB64, 'base64');
+    const tag = Buffer.from(tagB64, 'base64');
+    const ciphertext = Buffer.from(ctB64, 'base64');
 
-  const key = deriveKey(getMasterSecret(), salt);
+    const key = deriveKey(getMasterSecret(), salt);
 
-  const decipher = crypto.createDecipheriv(ALGO, key, iv);
-  decipher.setAuthTag(tag);
+    const decipher = crypto.createDecipheriv(ALGO, key, iv);
+    decipher.setAuthTag(tag);
 
-  const plain = Buffer.concat([
-    decipher.update(ciphertext),
-    decipher.final(),
-  ]).toString('utf8');
+    const plain = Buffer.concat([
+      decipher.update(ciphertext),
+      decipher.final(),
+    ]).toString('utf8');
 
-  return plain;
+    return plain;
+  } catch (err) {
+    // If the secret differs between environments (or data is corrupted/tampered),
+    // AES-GCM auth tag verification will fail and crypto throws.
+    // Do not crash the whole request—return the original value.
+    console.error('❌ decryptString failed (auth tag mismatch or bad data).', {
+      algo: ALGO,
+      hasAesGcmFormat: str.includes(':'),
+      // Avoid logging secrets or raw ciphertext.
+      valueLength: str.length,
+      errorName: err?.name,
+      errorMessage: err?.message,
+    });
+
+    return str;
+  }
 }
