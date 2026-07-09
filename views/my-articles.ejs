@@ -28,24 +28,26 @@ user) { %> <%- include('partials/nav-registered-user.ejs', { user: user }) %> <%
     <% myArticles.forEach((a) => { %>
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100">
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title"><%= a.title %></h5>
+        <div class="card-body d-flex flex-column m-4">
+          <h3 class="card-title paragraph-truncate-2"><%= a.title %></h3>
           <% if (a.excerpt) { %>
-          <p class="card-text text-muted"><%= a.excerpt %></p>
+          <p class="card-text text-muted my-3 paragraph-truncate">
+            <%= a.excerpt %>
+          </p>
           <% } %>
-
-          <div class="mt-auto d-flex flex-column gap-2">
-            <small class="text-muted">
+          <div class="mt-auto d-flex flex-row gap-2">
+            <small class="text-muted mt-4">
               <%= a.published ? 'Published' : 'Draft' %>
             </small>
-            <small class="text-muted">
+            <small class="text-muted mt-4">
               <%= a.createdAt ? new Date(a.createdAt).toLocaleDateString() : ''
               %>
             </small>
             <a
-              class="btn btn-primary"
+              class="text-black mt-4 fw-bold"
               href="/view-article/<%= a.id ?? a._id %>"
               role="button"
+              style="text-decoration: none;  text-align: end; margin-left: auto;  font-size: 0.875rem"
               onclick="
                 window.dispatchEvent(
                   new CustomEvent('view-article', {
@@ -54,7 +56,7 @@ user) { %> <%- include('partials/nav-registered-user.ejs', { user: user }) %> <%
                 )
               "
             >
-              Read
+              Read more
             </a>
           </div>
         </div>
